@@ -1,0 +1,72 @@
+/* Estructura CASE*/
+Use Negocios
+go
+
+/*CASE: Evaluando valores*/
+Begin
+	Declare @v_nroMensaje Tinyint =1
+	Declare @v_txtMensaje	varchar(max)
+	Set @v_txtMensaje =	Case	@v_nroMensaje
+											When 1 Then 'Hello world'
+											When 2 Then 'Vas a lograrlo'
+											When 3 Then 'Eres un(a) Campeón(a)'
+											Else 'Mensaje no implementado'
+										End
+	Print @v_txtMensaje
+End
+go
+
+/*CASE: Evaluando resultado de una expresión de comparación*/
+Begin
+	Set Dateformat DMY
+	Declare @v_fna DATE = '10/04/90'
+	Declare @v_edad Smallint
+	Declare @v_etapaGeneracional varchar(50)
+	Set @v_edad = DateDiff(yy,@v_fna,getdate())
+	Set @v_etapaGeneracional =	Case
+														When @v_edad<1 Then 'Bebe'
+														When @v_edad<=5 Then 'Infante'
+														When @v_edad<=12 Then 'Niño'
+														When @v_edad<=14 Then 'Puber'
+														When @v_edad<18 Then 'Adolescente'
+														When @v_edad<=30 Then 'Joven'
+														When @v_edad<65 Then 'Adulto'
+														Else 'Adulto Mayor'
+													End
+	Print 'La etapa generacional es: '+@v_etapaGeneracional
+End
+go
+
+/*Utilizando CASE dentro de un SELECT*/
+/*Ejemplo 1*/
+Select	IdPedido,
+			FechaPedido,
+			Destinatario,
+			EnvioPedido
+From Ventas.pedidoscabe
+go
+
+--Optimizando con CASE
+Select	IdPedido,
+			FechaPedido,
+			Destinatario,
+			Case EnvioPedido
+				When 0 Then 'Envio Pendiente'
+				When 1 Then 'Ya Enviado'
+			End	As [Estado del Envio]
+from Ventas.pedidoscabe
+go
+
+/*Ejemplo 2*/
+DECLARE @stock int
+SET @stock=100
+SELECT	NomProducto, 
+				PrecioUnidad, 
+				UnidadesEnExistencia, 
+				'Estado'= (CASE 
+									WHEN UnidadesEnExistencia>@stock THEN 'Stockeado'
+									WHEN UnidadesEnExistencia=@stock THEN 'Limite'
+									WHEN UnidadesEnExistencia<@stock THEN 'Haga una Solicitud'
+								END)
+FROM Compras.productos
+Go

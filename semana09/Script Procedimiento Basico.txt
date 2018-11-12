@@ -1,0 +1,101 @@
+/*Procedimientos Almacenados*/
+Use Negocios
+go
+
+/*Listar los procedimientos almacenados*/
+Select * from sys.procedures
+go
+
+/*Crear un SP sin parámetros, que realice una consulta*/
+--Crear el plan
+Create Procedure USP_001
+As
+Begin
+	Select * from Ventas.clientes
+End
+go
+
+--Ejecutar el plan 
+Execute USP_001
+go
+
+/*Modificar el SP para incluir parámetros*/
+--Modificar el plan
+Alter Procedure USP_001
+@p_idpais char(3) --Parámetro
+As
+Begin
+	Select * from Ventas.clientes
+	Where idpais =@p_idpais
+End
+go
+
+--Ejecutar el plan
+Execute USP_001 '003'
+go
+
+/*Modificar el SP para dar un valor predefinido al parámetro*/
+--Modificar el plan
+Alter Procedure USP_001
+@p_idpais char(3) ='001'--Parámetro con valor definido
+As
+Begin
+	Select * from Ventas.clientes
+	Where idpais =@p_idpais
+End
+go
+
+--Ejecutar sin parámetro porque va asumir el valor definido en el procedimiento
+Execute USP_001  
+go
+
+--Ejecutar con parámetro
+Execute USP_001  '004'
+go
+
+/*Utilizando parámetros fechas*/
+--Crear el plan
+Create Procedure USP_002
+@p_FechaO1 Date, @p_FechaO2 Date
+As
+Begin
+	Select * From Ventas.pedidoscabe
+	Where FechaPedido Between @p_FechaO1 and @p_FechaO2
+End
+go
+
+--Ejecutar SP
+Execute USP_002 '21/02/98','05/03/98'
+go
+
+--Ejecutar SP
+Execute USP_002 '05/03/98', '21/02/98'
+go
+
+--Validar el SP anterior para que la primera fecha parámetro, sea menor a la segunda, de no ser asi
+--genere un error de severidad 16 y controlelo con Try / Catch
+--Modificar el plan
+Alter Procedure USP_002
+@p_FechaO1 Date, @p_FechaO2 Date
+As
+Begin
+	Begin Try
+		If @p_FechaO1 < @p_FechaO2
+			Select * From Ventas.pedidoscabe
+			Where FechaPedido Between @p_FechaO1 and @p_FechaO2
+		Else
+			RaisError ('Error... La primer fecha es mayor que la segunda, intenta nuevamente',16,1)
+	End Try
+	Begin Catch
+			Print Error_message()
+	End Catch
+End
+go
+
+--Ejecutar SP
+Execute USP_002 '05/03/98', '21/02/98'
+go
+
+--Ejecutar SP
+Execute USP_002 '21/02/98', '05/03/98'
+go

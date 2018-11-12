@@ -1,0 +1,15 @@
+/*Ejercicios*/
+
+Use Negocios
+go
+
+/*Crear un SP que permita registrar nuevos Empleados. Deberá validar la NO Existencia del 
+IDEmpleado y también la existencia de las foráneas IdDistrito y IdCargo. De lo contrario, mostrar mensajes generados
+con RaisError  con severidad leve*/
+
+
+
+
+
+/*Crear un SP que permita saber el precio mas alto del producto de una categoria.
+Deberá definir parámetro de entrada y salida*/

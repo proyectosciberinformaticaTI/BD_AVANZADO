@@ -1,0 +1,99 @@
+/*Procedimientos con transacciones*/
+Use Negocios
+go
+
+/*Procedimiento que permita registrar nuevos Productos*/
+--Crear el plan
+Create Procedure USP_IngProducto
+@p_IdProducto		int,	
+@p_NomProducto	varchar(40),
+@p_IdProveedor		int,
+@p_IdCategoria		int,
+@p_CantxUnidad	varchar(20),
+@p_PrecioUnidad	smallmoney,
+@p_UnidadesEnExistencia	smallint,
+@p_UnidadesEnPedido	smallint
+As
+Begin
+		Insert Compras.productos
+		Values
+		(@p_IdProducto, @p_NomProducto, @p_IdProveedor, @p_IdCategoria, @p_CantxUnidad,
+		@p_PrecioUnidad, @p_UnidadesEnExistencia, @p_UnidadesEnPedido)
+End
+go
+
+--Ejecutar el plan
+Execute USP_IngProducto '100','Pastilla antialer','1','3','Uni','2.5','0','100'
+go
+
+--Comprobar
+Select * from Compras.productos
+
+--Ejecutar el plan (no va funcionar por idproducto repetido (PK))
+Execute USP_IngProducto '100','Pastilla anticonc','2','2','Uni','6.5','0','50'
+go
+
+--Modificar el SP para validar la No existencia del IdProducto
+--Modificar el plan
+Alter Procedure USP_IngProducto
+@p_IdProducto		int,	
+@p_NomProducto	varchar(40),
+@p_IdProveedor		int,
+@p_IdCategoria		int,
+@p_CantxUnidad	varchar(20),
+@p_PrecioUnidad	smallmoney,
+@p_UnidadesEnExistencia	smallint,
+@p_UnidadesEnPedido	smallint
+As
+Begin
+		If Not Exists (Select * from Compras.productos Where IdProducto = @p_IdProducto)
+			Insert Compras.productos
+			Values
+			(@p_IdProducto, @p_NomProducto, @p_IdProveedor, @p_IdCategoria, @p_CantxUnidad,
+			@p_PrecioUnidad, @p_UnidadesEnExistencia, @p_UnidadesEnPedido)
+		else
+			RaisError ('Error....IdProducto repetido...Intenta nuevamente.',10,1)
+End
+go
+
+--Ejecutar el plan (mejora la ejecución)
+Execute USP_IngProducto '100','Pastilla anticonc','2','2','Uni','6.5','0','50'
+go
+
+--Ejecutar el plan (no va funcionar porque no existe ni el IdProveedor ni IdCategoria)
+Execute USP_IngProducto '101','Pastilla anticonc','99','200','Uni','6.5','0','50'
+go
+
+--Modificar el SP para validar la existencia del IdProveedor y IdCategoria
+--Modificar el plan
+Alter Procedure USP_IngProducto
+@p_IdProducto		int,	
+@p_NomProducto	varchar(40),
+@p_IdProveedor		int,
+@p_IdCategoria		int,
+@p_CantxUnidad	varchar(20),
+@p_PrecioUnidad	smallmoney,
+@p_UnidadesEnExistencia	smallint,
+@p_UnidadesEnPedido	smallint
+As
+Begin
+		If Not Exists (Select * from Compras.productos Where IdProducto = @p_IdProducto)
+			Begin
+					If Exists (Select * from Compras.proveedores Where IdProveedor = @p_IdProveedor) And
+						Exists (Select * From Compras.categorias Where IdCategoria = @p_IdCategoria)
+						Insert Compras.productos
+						Values
+						(@p_IdProducto, @p_NomProducto, @p_IdProveedor, @p_IdCategoria, @p_CantxUnidad,
+						@p_PrecioUnidad, @p_UnidadesEnExistencia, @p_UnidadesEnPedido)
+					Else
+						RaisError ('Error.. con las foráneas de proveedor o categoria',10,1)
+			End
+		else
+			RaisError ('Error....IdProducto repetido...Intenta nuevamente.',10,1)
+End
+go
+
+--Ejecutar el plan 
+Execute USP_IngProducto '101','Pastilla anticonc','9','2','Uni','6.5','0','50'
+go
+

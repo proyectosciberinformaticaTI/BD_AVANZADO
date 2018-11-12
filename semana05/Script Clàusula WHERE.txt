@@ -1,0 +1,82 @@
+/*Cláusula WHERE*/
+Use Negocios
+go
+
+/*Operadores de Comparaciòn*/
+Select *
+From Compras.productos
+Where PrecioUnidad < 100
+go
+
+-------------------------
+Select *
+From Compras.productos
+Where PrecioUnidad=20
+go
+
+------------------------
+Select *
+From Compras.productos
+Where PrecioUnidad>35
+go
+
+-----------------------
+Select *
+From Compras.productos
+Where IdCategoria <> 1
+go
+
+--o Bien
+Select *
+From Compras.productos
+Where IdCategoria != 1
+go
+
+/*Operadores Lògicos : AND OR NOT*/
+Select *
+From Compras.productos
+Where IdCategoria=1 And PrecioUnidad<=30
+go
+
+------------------------
+Select *
+From Compras.proveedores
+Where idpais='001' OR idpais='003' OR idpais='005'
+go
+
+------------------------
+Select *
+From Compras.proveedores
+Where NOT( idpais='001' OR idpais='003' OR idpais='005')
+go
+
+/*Operadores Especiales*/
+/*BETWEEN*/
+Select *
+From Compras.productos
+Where PrecioUnidad BETWEEN 20 and 50
+go
+
+/*IN*/
+Select *
+From Compras.productos
+Where IdCategoria IN (1,3,5)
+go
+
+/*LIKE*/
+Select *
+From Ventas.clientes
+Where NomCliente Like 'P%'
+go
+
+-----------------------
+Select *
+From Ventas.clientes
+Where NomCliente Like '[A-C]%'
+go
+
+----------------------
+Select *
+From Ventas.clientes
+Where NomCliente Like '[^A-C]%'
+go

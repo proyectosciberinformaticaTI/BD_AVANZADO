@@ -1,0 +1,48 @@
+/*Consultas Sencillas*/
+Use Negocios
+go
+
+/* Uso del Select*/
+Select 'Hello World'
+go
+
+/*Consultar los datos de una Tabla usando cláusula FROM*/
+Select *
+From Ventas.clientes
+go
+
+/*Mostrando ciertos campos*/
+Select	IdCliente, 
+			NomCliente,
+			DirCliente
+from Ventas.clientes
+go
+
+/*Utilizando alias a los campos*/
+Select	IdCliente		As 'Codigo', 
+			NomCliente	As 'NombreCliente',
+			DirCliente		As 'Direccion'
+from Ventas.clientes
+go
+
+-- o Bien
+Select	IdCliente		As [Codigo], 
+			NomCliente	As [Nombre del Cliente],
+			DirCliente		As [Direccion]
+from Ventas.clientes
+go
+
+--o Bien
+Select	IdCliente		 'Codigo', 
+			NomCliente	 'NombreCliente',
+			DirCliente		 'Direccion'
+from Ventas.clientes
+go
+
+-- o Bien
+Select	IdCliente		 [Codigo], 
+			NomCliente	 [Nombre del Cliente],
+			DirCliente		 [Direccion]
+from Ventas.clientes
+go
+

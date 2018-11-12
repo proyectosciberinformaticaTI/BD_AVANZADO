@@ -1,0 +1,21 @@
+/*Consultas Ordenadas*/
+Use Negocios
+go
+
+/*Utilizando Cláusula ORDER BY*/
+Select *
+From Compras.productos
+Order By IdCategoria Asc
+go
+
+-----
+Select *
+From Compras.productos
+Order By IdCategoria Asc, IdProveedor Desc
+go
+
+-----
+Select *
+From Compras.productos
+Order By IdCategoria Asc, IdProveedor Desc, NomProducto Asc
+go

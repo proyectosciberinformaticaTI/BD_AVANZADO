@@ -1,0 +1,72 @@
+/*Script Truncate Table*/
+Use Negocios
+go
+
+/*Crear una tabla a partir de un consulta*/
+Select	*			into dbo.Articulos
+from Compras.productos
+go
+
+/*Consultar la tabla creada*/
+Select * from dbo.Articulos
+go
+
+/*Eliminar los registros de la tabla Articulo con Truncate Table*/
+Truncate Table dbo.Articulos
+go
+
+/*Consultar los registros de la tabla articulos*/
+Select * from dbo.Articulos
+go
+
+/*Otro ejemplo*/
+/*Crear tabla con identity*/
+Create Table dbo.Consumer
+(
+id				int identity,
+fullname	varchar(50)
+)
+go
+
+/*Insertar registros a esta tabla desde la tabla clientes.*/
+Insert dbo.Consumer
+Select NomCliente from Ventas.clientes
+go
+
+/*Consultar*/
+Select * from dbo.Consumer
+go
+
+/*Eliminar todos los registros de la tabla Consumer usando Delete*/
+Delete from dbo.Consumer
+go
+
+/*Consultar*/
+Select * from dbo.Consumer
+go
+
+/*Volver a Insertar registros a esta tabla consumer desde la tabla clientes.*/
+Insert dbo.Consumer
+Select NomCliente from Ventas.clientes
+go
+
+/*Consultar*/
+Select * from dbo.Consumer
+go
+
+/*Eliminar todos los registros de la tabla Consumer usando Truncate Table*/
+Truncate Table dbo.Consumer
+go
+
+/*Consultar*/
+Select * from dbo.Consumer
+go
+
+/*Volver a Insertar registros a esta tabla consumer desde la tabla clientes.*/
+Insert dbo.Consumer
+Select NomCliente from Ventas.clientes
+go
+
+/*Consultar*/
+Select * from dbo.Consumer
+go

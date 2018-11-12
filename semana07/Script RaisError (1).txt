@@ -1,0 +1,27 @@
+/*Script RaisError*/
+Use Negocios
+go
+
+/*Personalizando mensajes*/
+Declare @v_CantitadPedida smallint =110
+If @v_CantitadPedida>=100
+	RaisError('Cantidad excedida',10,1)
+go
+
+/*Personalizando mensajes con severidad 16*/
+Declare @v_CantitadPedida smallint =110
+If @v_CantitadPedida>=100
+	RaisError('Cantidad excedida',16,1)
+go
+
+/*Personalizando mensajes con severidad 16 controlando con TRY CATCH*/
+Declare @v_CantitadPedida smallint =110
+Begin Try
+	If @v_CantitadPedida>=100
+		RaisError('Cantidad excedida',16,1)
+End Try
+Begin Catch
+		Print error_message()
+		Print 'Error controlado con Catch'
+End Catch
+go

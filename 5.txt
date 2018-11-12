@@ -1,0 +1,276 @@
+use BDVideos
+go
+
+/*pregunta 01*/
+
+Select*from dbo.genero
+
+Declare CursorVideos1
+cursor for
+	select p.idpelicula, p.titulo,g.nomgenero,d.nomdir,p.duracion,p.precioalq
+	from dbo.director d join dbo.pelicula p 
+	on d.iddirector = p.iddirector join dbo.genero g
+	on p.idgenero = g.idgenero
+	group by p.idpelicula,p.titulo,g.nomgenero,d.nomdir,p.duracion,p.precioalq
+declare 
+@vc_idpelicula char(3),
+@vc_titulo varchar(50),
+@vc_nomgenero varchar(45),
+@vc_nomdir varchar(45),
+@vc_duracion varchar(45),
+@vc_precioalq money
+open CursorVideos1
+fetch CursorVideos1 into @vc_idpelicula,@vc_titulo,@vc_nomgenero,@vc_nomdir,@vc_duracion,@vc_precioalq
+	print space(17) + 'REPORTE DE PELICULAS'
+	print replicate ('=',60)
+	print 'Idpelicula'+ space(5) +'titulo'+space(5) + 'Nomgenero' +space(5) + 'Nomdir'+space(5)+'Duracion'+space(5)+'Precioalq'+ space (5) + 'DESCUENTO'
+	while @@FETCH_STATUS = 0
+		begin
+			declare @vc_descuento smallmoney
+			if @vc_precioalq <25
+				set @vc_descuento = @vc_precioalq*0.07
+			else if @vc_precioalq <30
+				set @vc_descuento = @vc_precioalq*0.10
+			else
+				set @vc_descuento = @vc_precioalq*0.15
+			print @vc_idpelicula+ space(5) + @vc_titulo + space(5)+@vc_nomgenero+space(5)+@vc_nomdir+space(5)+@vc_duracion+str(@vc_precioalq)+str(@vc_descuento)
+			fetch CursorVideos1 into @vc_idpelicula,@vc_titulo,@vc_nomgenero,@vc_nomdir,@vc_duracion,@vc_precioalq
+		end
+close CursorVideos1
+deallocate CursorVideos1
+go
+
+
+/*3*/
+select* from dbo.pelicula
+go
+
+create procedure usp_IngresarPeliculas
+@idpelicula		char(3),
+@titulo		varchar(50),
+@iddirector		char(3),
+@idgenero		char(3),
+@idioma		varchar(45),
+@categoria	varchar(45),
+@precioalq		money,
+@duracion	varchar(45)
+as 
+begin 
+	begin tran trIngresarPeliculas
+	insert dbo.pelicula
+	values (@idpelicula,@titulo,@iddirector,@idgenero,@idioma,@categoria,@precioalq,@duracion)
+	if not (@categoria = 'V')
+		commit tran trIngresarPelicula
+	else 
+		rollback tran trIngresarPelicula
+end
+go
+
+execute usp_IngresarPeliculas 'P21','deadpool','D05','G02','Nacional','Nacional','50.00','150minutos'
+go
+
+select*from dbo.pelicula
+go
+
+/*5*/
+
+use BDVideos
+go
+
+execute sp_addumpdevice 'Disk','BackupFullVideos','C:\BackupPradoLF\BkpFullVentas.bak'
+go
+
+/*04*/
+create table TransaccionesPeliculas
+(
+idpelicula	char(3),
+titulo		varchar(50),
+iddirector	char(3),
+idgenero	char(3),
+idioma		varchar(45),
+categoria	varchar(45),
+precioalq	money,
+duracion	varchar(45),
+fecha_hora	datetime,
+tipo_tran	varchar(20)
+)
+go
+
+drop table TransaccionesPeliculas
+go
+
+create trigger tr_transaccionesPelicula
+on pelicula
+for insert, delete,update
+as
+	Begin
+	If Exists (Select * from inserted) And Exists (Select * from deleted)
+		Insert TransaccionesPelicula
+		Select idpelicula,titulo,iddirector,idgenero,idioma,categoria,precioalq,duracion, getdate(),'UPDATE'
+		from inserted
+
+	Else if Exists (Select * from inserted)
+				Insert TransaccionesPelicula
+				Select idpelicula,titulo,iddirector,idgenero,idioma,categoria,precioalq,duracion, getdate(),'INSERT'
+				from inserted
+			Else 
+				Insert TransaccionesPelicula
+				Select idpelicula,titulo,iddirector,idgenero,idioma,categoria,precioalq,duracion, getdate(),'DELETE'
+				from deleted
+End
+go 
+
+insert pelicula 
+values('P22','Kung Fu Panda','D04','G03','Ingles','Extranjera','25.00','120 minutos')
+go
+
+update pelicula
+set precioalq = '35.00'
+where idpelicula = 'P22'
+go
+
+delete from pelicula
+where idpelicula ='P22'
+go
+
+select * from TransaccionesPeliculas
+go
+
+select*from pelicula
+go
+
+/*pregunta 06*/
+
+exec sp_addumpdevice 'Disk','BackupFullVideosss','C:\BackupPRADOLF\BkpFullVentas.bak'
+go
+
+backup database BDVideos
+to [BackupfullVideos]
+with Init
+go
+
+
+
+==================================================================
+
+
+
+
+
+/*Cree un cursor que permita mostrar el codigo , ruc del cliente, monto
+de la venta total e interes: 
+si es menos a 200 sera del 10% de la deuda.
+si es mayor igual a 200 y menos a 1000, será del 15% de la deuda
+si es mayor a 1000 será del 20% de la deuda*/
+
+Declare CursoMoras Cursor For Select C.COD_CLI, C.RUC_CLI,         
+                                           SUM(DF.CAN_VEN* DF.PRE_VEN) AS DEUDA
+                              From TB_CLIENTE As C Join TB_FACTURA AS F
+                                   On C.COD_CLI = F.COD_CLI JOIN TB_DETALLE_FACTURA AS DF
+                                   ON F.NUM_FAC = DF.NUM_FAC
+                              Where F.EST_FAC = 2
+                              Group By C.COD_CLI, C.RUC_CLI 
+Declare @vc_codcli char(4), @vc_rucli char(12), @vc_deuda smallmoney
+Open CursorDeudas
+Fetch CursorDeudas into @vc_codcli, @vc_rucli, @vc_deuda
+Print space(25)+ 'Reporte de deudas y moras'
+Print replicate ('=',60)
+Print space(5)+'Codcli'+space(5)+'Deuda'+space(6)+'Mora'
+Print replicate('-',60)
+while @@FETCH_STATUS = 0
+     begin 
+          Declare @v_mora  smallmoney
+          if @vc_deuda < 200
+             set @v_mora= 0.10 * @vc_deuda
+          else if @vc_deuda < 1000
+          set @v_mora = 0.15 * @vc_deuda
+              else 
+                  set @v_mora = 0.20 + @vc_deuda
+    Print @vc_codcli + space(5) +  @vc_ruccli +space(5)+str(@vc_deuda)+ space(5)+ str(@v_mora)
+    Fetch CursorDeudas into @vc_codcli, @vc_rucli, @vc_deuda
+   End        
+Close CursorDeudas
+Deallocate CursorDeudas
+Go
+
+
+/*Implemente una funcion de tabla en linea que permita mostrar
+las ventas efectuadas por un determinado Vendedor (parámetro Id del vendedor)*/
+
+Create Function dbo.fntVentasXVendedor (@p_codVendedor char(3))
+Returns Table
+As
+  Return (Select F.NUM_FAC,
+             SUM(DF.CAN_VEN * DF.PRE_VEN)AS MONTOVENTA    
+          From TB_FACTURA as F JOIN TB_DETALLE_FACTURA AS DF
+              ON F.NUM_FAC = DF.NUM_FAC
+          Where f.COD_VEN = @p_codVendedor    
+          GROUP BY F.NUM_FAC)
+Go
+
+--Comprobar
+Select * from dbo.fntVentasXVendedor('V01')  
+Go    
+/*Cree un procedimiento alamcenado que permita efectuar la transacción explicita
+de ingresar neuvos productos, confirmaria si el neuvo producto no es importado,
+caso contrario desahcer la transaccion*/
+
+Create Procedure USP_InNewProd
+
+   @p_Cod_Pro  char(5),
+   @p_Des_Pro   varchar(50),
+   @p_Pre_Pro   money,
+   @p_Stk_Act   int,
+   @p_Stk_Min   int,
+   @p_Uni_med   varchar(30),
+   @p_Lin_Pro   varchar(10),
+   @p_Importado varchar(10) 
+   AS
+   Begin
+       Begin Tran TrinProducto
+         Insert TB_PRODUCTO
+         Values
+         (@p_cod_pro, @p_Des_Pro,@p_Pre_Pro,@p_Stk_Act,@p_Stk_Min,@p_Uni_med,
+         @p_Lin_Pro, @p_Importado)
+         if not(@p_Importado = 'V')
+               Commit Tran TrinProducto
+         else 
+               Rollback tran Trinproducto
+End
+Go
+--Ejecutar
+
+Execute USP_InNewProd 'P055','HANINA CLARA','10','10','5','KG','1','F'  
+gO        
+
+Select * from TB_PRODUCTO
+
+
+
+/*Implemente un BackupDevices(BackupFullVentas).
+Esas debe ser Creadas en el dico C: y Carpeta Vacia*/
+
+Exec sp_addumpdevice 'Disk','BackupFullVentas','C:\Copia\BFullVentas.Bak'
+Go
+
+
+/*Cree un Backup Diferencial de la Base de Datos VentasCIB en el
+BackupPDevice Creado, Luego Programe para que esta accion se realice todos
+los dias a la 11.00 pm*/
+
+
+--paso1
+Backup Database VentasCiB
+to[BackupFullVentas]
+with Init
+Go 
+
+--Agente -iniciar- si- +-Trabajos-clic derecho-nuevotrabajo- nombre:RespaldoDiferencial-descripcion:Backup diferencial de la base de datos VentasCIB- Pasos - Nuevo- Nombre del Paso: Respaldo- Comando: Backup Database VentasCib 
+                   to BackupDiffVentas
+                    with differential; -Analizar-Aceptar-programaciones-Nueva-Nombre:programacion01-se repite cada 1 i selecionar todos cajas- sucede uan vez:23:00:00-descripcion :sucede luens martes - aceptar
+
+
+
+
+
+

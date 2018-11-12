@@ -1,0 +1,91 @@
+/*Consultas Agrupadas*/
+Use Negocios
+go
+
+/*Mostrar los clientes y sus pedidos*/
+Select	C.NomCliente,
+			P.IdPedido
+From Ventas.clientes C Join Ventas.pedidoscabe P
+		On C.IdCliente = P.IdCliente
+Order By 1
+go
+
+/*Agrupar los pedidos por cliente*/
+Select	C.NomCliente
+From Ventas.clientes C Join Ventas.pedidoscabe P
+		On C.IdCliente = P.IdCliente
+Group By C.NomCliente
+go
+
+/*Agrupar los pedidos por cliente mostrando la cantidad de pedidos de C/U*/
+Select	C.NomCliente,
+			Count(P.IdPedido) As [CantidadPedidos]
+From Ventas.clientes C Join Ventas.pedidoscabe P
+		On C.IdCliente = P.IdCliente
+Group By C.NomCliente
+go
+
+-------------
+Select	Year(P.FechaPedido) As Año,
+			C.NomCliente,
+			Count(P.IdPedido) As [CantidadPedidos]
+From Ventas.clientes C Join Ventas.pedidoscabe P
+		On C.IdCliente = P.IdCliente
+Group By Year(P.FechaPedido),C.NomCliente
+Order By 1,2
+go
+
+----------
+-------------
+Select	Year(P.FechaPedido) As Año,
+			E.NomEmpleado,
+			C.NomCliente,
+			Count(P.IdPedido) As [CantidadPedidos]
+From Ventas.clientes C Join Ventas.pedidoscabe P
+		On C.IdCliente = P.IdCliente Join RRHH.empleados E
+		On E.IdEmpleado = P.IdEmpleado
+Group By Year(P.FechaPedido),E.NomEmpleado,C.NomCliente
+Order By 1,2,3
+go
+
+-------Usando HAVING
+Select	Year(P.FechaPedido) As Año,
+			E.NomEmpleado,
+			C.NomCliente,
+			Count(P.IdPedido) As [CantidadPedidos]
+From Ventas.clientes C Join Ventas.pedidoscabe P
+		On C.IdCliente = P.IdCliente Join RRHH.empleados E
+		On E.IdEmpleado = P.IdEmpleado
+Group By Year(P.FechaPedido),E.NomEmpleado,C.NomCliente
+Having Count(P.IdPedido) >2
+Order By 1,2,3
+go
+
+
+
+
+-----Usando CUBE
+
+Select	Year(P.FechaPedido) As Año,
+			E.NomEmpleado,
+			C.NomCliente,
+			Count(P.IdPedido) As [CantidadPedidos]
+From Ventas.clientes C Join Ventas.pedidoscabe P
+		On C.IdCliente = P.IdCliente Join RRHH.empleados E
+		On E.IdEmpleado = P.IdEmpleado
+Group By Cube (Year(P.FechaPedido),E.NomEmpleado,C.NomCliente)
+Order By 1,2,3
+go
+
+-----Usando ROLLUP
+
+Select	Year(P.FechaPedido) As Año,
+			E.NomEmpleado,
+			C.NomCliente,
+			Count(P.IdPedido) As [CantidadPedidos]
+From Ventas.clientes C Join Ventas.pedidoscabe P
+		On C.IdCliente = P.IdCliente Join RRHH.empleados E
+		On E.IdEmpleado = P.IdEmpleado
+Group By ROLLUP (Year(P.FechaPedido),E.NomEmpleado,C.NomCliente)
+Order By 1,2,3
+go

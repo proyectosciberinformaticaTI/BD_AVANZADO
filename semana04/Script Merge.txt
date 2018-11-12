@@ -1,0 +1,64 @@
+/*Merge*/
+Use Negocios
+go
+
+/*Consultar Datos*/
+Select * from Ventas.paises
+go
+
+/*Utilizando Bloque SQL*/
+Begin
+Declare @v_NomPais Varchar(100), @v_IdPais Char(3)
+Set @v_IdPais		= '009'
+Set @v_NomPais	= 'Brasil' 
+	Merge Ventas.Paises As Target
+	Using (Select @v_IdPais, @v_Nompais)  As Source (IdPais, NombrePais)
+	On (Source.IdPais = Target.IdPais)
+	When Matched Then
+				Update Set Target.NombrePais = Source.NombrePais
+	When Not Matched Then
+				Insert Values (Source.idPais, Source.NombrePais);
+End
+go
+
+/*Consultar Datos*/
+Select * from Ventas.paises
+go
+
+/*Utilizando Bloque SQL*/
+Begin
+Declare @v_NomPais Varchar(100), @v_IdPais Char(3)
+Set @v_IdPais		= '999'
+Set @v_NomPais	= 'Nor Corea' 
+	Merge Ventas.Paises As Target
+	Using (Select @v_IdPais, @v_Nompais)  As Source (IdPais, NombrePais)
+	On (Source.IdPais = Target.IdPais)
+	When Matched Then
+				Update Set Target.NombrePais = Source.NombrePais
+	When Not Matched Then
+				Insert Values (Source.idPais, Source.NombrePais);
+End
+go
+
+/*Consultar Datos*/
+Select * from Ventas.paises
+go
+
+/*Utilizando Bloque SQL*/
+Begin
+Declare @v_NomPais Varchar(100), @v_IdPais Char(3)
+Set @v_IdPais		= '999'
+Set @v_NomPais	= 'Sur Korea' 
+	Merge Ventas.Paises As Target
+	Using (Select @v_IdPais, @v_Nompais)  As Source (IdPais, NombrePais)
+	On (Source.IdPais = Target.IdPais)
+	When Matched Then
+				Update Set Target.NombrePais = Source.NombrePais
+	When Not Matched Then
+				Insert Values (Source.idPais, Source.NombrePais);
+End
+go
+
+/*Consultar Datos*/
+Select * from Ventas.paises
+go

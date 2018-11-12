@@ -1,0 +1,34 @@
+/*Script Estructura WHILE*/
+Use Negocios
+go
+
+/*Crear estructura WHILE*/
+Begin
+	Set DateFormat DMY
+	Declare @v_fechaInicial Date='01/01/90'
+	Declare @v_fechaFinal Date='31/12/00'
+	While @v_fechaInicial <= @v_fechaFinal
+		Begin
+			Print @v_fechaInicial
+			Set @v_fechaInicial=DateAdd(dd,1,@v_fechaInicial)
+		End
+End
+go
+
+/*Crear estructura WHILE*/
+Begin
+	Set DateFormat DMY
+	Declare @v_fechaInicial Date='01/01/90'
+	Declare @v_fechaFinal Date='31/12/00'
+	Declare @v_Flag	 bit =1
+	While @v_Flag = 1
+		Begin
+			Print @v_fechaInicial
+			Set @v_fechaInicial=DateAdd(dd,1,@v_fechaInicial)
+			If @v_fechaInicial > @v_fechaFinal
+				Break
+			Else
+				Continue
+		End
+End
+go

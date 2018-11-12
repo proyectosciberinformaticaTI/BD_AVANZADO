@@ -1,0 +1,15 @@
+/*Script BULK INSERT*/
+Use Negocios
+go
+
+/*Insertar registros desde un archivo plano ubicado en el
+disco C:\Data, llamado Cliente.TXT*/
+Bulk Insert Ventas.Clientes
+From 'C:\Data\Clientes.txt'
+With (	FieldTerminator = ',',
+			RowTerminator ='\n'	)
+go
+
+/*Consultar*/
+Select * from Ventas.clientes
+go

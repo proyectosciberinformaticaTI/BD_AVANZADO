@@ -1,0 +1,80 @@
+/*Procedimientos Anidados*/
+Use Negocios
+go
+
+/*Crear un procedimiento para ingresar nuevas categorias*/
+If Exists(Select * from sys.procedures Where name='USP_IngCat')
+	Drop Procedure USP_IngCat
+go
+
+--Procedimiento de ingreso de categorias
+Create Procedure USP_IngCat
+@p_IdCategoria	int,
+@p_NombreCategoria varchar(50),
+@p_Descripcion Varchar(Max)
+As
+Begin
+	Insert Compras.categorias
+	Values
+	(@p_IdCategoria, @p_NombreCategoria, @p_Descripcion)
+End
+go
+
+--Procedimiento Actualizar categorias
+Create Procedure USP_ActCat
+@p_IdCategoria	int,
+@p_NombreCategoria varchar(50),
+@p_Descripcion Varchar(Max)
+As
+Begin
+	Update Compras.categorias
+	Set		NombreCategoria = @p_NombreCategoria,
+				Descripcion = @p_Descripcion
+	Where IdCategoria = @p_IdCategoria
+End
+go
+
+/*Crear un procedimiento que invoque a uno de los 02 anteriores, segun sea el
+caso*/
+Create Procedure USP_TranCat
+@p_tipoTran int,
+@p_IdCategoria	int,
+@p_NombreCategoria varchar(50),
+@p_Descripcion Varchar(Max)
+As
+Begin
+	If @p_tipoTran=1 --Insertar
+		Begin 
+			If Not Exists	(Select * from Compras.categorias Where IdCategoria = @p_IdCategoria)
+				Execute USP_IngCat @p_idCategoria, @p_NombreCategoria, @p_Descripcion
+			Else	
+				Raiserror ('El Id Categoria ya existe',10,1)
+		End
+	If @p_tipoTran=2 --Actualizar
+		Begin
+			If Exists (Select * from Compras.categorias Where IdCategoria = @p_IdCategoria)
+				Begin
+					If @p_NombreCategoria is Null
+						Set @p_NombreCategoria = (Select NombreCategoria From Compras.categorias
+																			Where IdCategoria= @p_IdCategoria)
+					If @p_Descripcion Is null
+						Set @p_Descripcion = (Select Descripcion From Compras.categorias
+																			Where IdCategoria= @p_IdCategoria)
+					Execute USP_ActCat @p_idCategoria, @p_NombreCategoria, @p_Descripcion
+				End
+			Else
+				Raiserror ('El Id Categoria No existe',10,1)
+		End
+End
+go
+
+--Ejecutar para insertar
+Execute USP_TranCat '1','55','Frutas','Alimentos sanos'
+go
+
+Select * from Compras.categorias
+go
+
+--Ejecutar para actualizar
+Execute USP_TranCat '2','55',null,'Dulces sanos (Sportacus)'
+go

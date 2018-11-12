@@ -1,0 +1,16 @@
+/*Restaurar la base de datos*/
+Use master
+go
+
+
+/*Restaurando la base de datos y reemplazandola inmediatamente*/
+use master
+go
+
+Restore Database Negocios
+From disk='C:\Respaldo\BackupNegociosFull2.Bak'
+With Replace
+go
+
+
+

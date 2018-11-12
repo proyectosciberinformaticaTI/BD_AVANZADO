@@ -1,0 +1,108 @@
+/*Trigger*/
+Use Negocios
+go
+
+/*Crear un trigger*/
+If exists (Select * from sys.triggers where name='trPais')
+	drop trigger ventas.trpais
+go
+
+Create Trigger TrPais
+On Ventas.paises
+For Insert,delete,update
+As
+Begin
+	If Exists (Select * from inserted) And Exists (Select * from deleted)
+		Print 'Hizo una actualización'
+	Else if Exists (Select * from inserted)
+				Print 'Hizo una Inserción'
+			Else 
+				Print 'Hizo una depuración'
+End
+go
+
+/*Comprobar el funcionamiento del trigger*/
+--Al hacer un Insert
+Insert Ventas.paises
+Values
+('545','Jamaica')
+go
+
+--Al hacer una actualización
+Update Ventas.paises
+Set NombrePais = 'Emiratos Arabes'
+Where Idpais = '545'
+go
+
+--Al hacer una Eliminación
+Delete from Ventas.paises
+Where Idpais ='545'
+go
+
+/*Otro ejemplo de trigger*/
+If exists (Select * from sys.triggers where name='trPais')
+	drop trigger ventas.trpais
+go
+
+/*Trigger para hacer auditaria a la tabla Paises*/
+--Crear Table
+Create Table AuditPaises
+(
+[Idpais]					char(3),
+[NombrePais]		Varchar(40),
+tipoTransaccion	Varchar(40),
+fechaTransaccion Datetime,
+hostTransaccion		Varchar(40),
+usuarioTransaccion Varchar(40)
+)
+go
+
+--Crear el trigger
+Create Trigger TrPais
+On Ventas.paises
+For Insert,delete,update
+As
+Begin
+	If Exists (Select * from inserted) And Exists (Select * from deleted)
+		Insert dbo.AuditPaises
+		Select Idpais, NombrePais, 'Actualización', getdate(), @@SERVERNAME,
+					USER_NAME ()
+		from inserted
+
+	Else if Exists (Select * from inserted)
+				Insert dbo.AuditPaises
+				Select Idpais, NombrePais, 'Inserción', getdate(), @@SERVERNAME,
+					USER_NAME ()
+				from inserted
+			Else 
+				Insert dbo.AuditPaises
+				Select Idpais, NombrePais, 'Eliminación', getdate(), @@SERVERNAME,
+						USER_NAME ()
+				from deleted
+End
+go
+
+--Comprobar
+--Al hacer un Insert
+Insert Ventas.paises
+Values
+('545','Jamaica')
+go
+
+--Al hacer una actualización
+Update Ventas.paises
+Set NombrePais = 'Emiratos Arabes'
+Where Idpais = '545'
+go
+
+--Al hacer una Eliminación
+Delete from Ventas.paises
+Where Idpais ='545'
+go
+
+----Visualizar tablas
+Select * from Ventas.paises
+go
+
+Select * from AuditPaises
+go

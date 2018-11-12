@@ -1,0 +1,20 @@
+/*Backup Log*/
+use master
+go
+
+/*Primero cambar el modelo de recuperación a Full*/
+Alter Database Negocios
+Set Recovery Full
+go
+
+/*Luego hacer el backup Full*/
+Backup Database Negocios
+To Disk = 'C:\Respaldo\BFLNegocios.Bak'
+with init
+go
+
+/*A continuación el backup Log*/
+Backup Log Negocios
+to Disk='C:\Respaldo\BLog1Negocios.trn'
+with init
+go

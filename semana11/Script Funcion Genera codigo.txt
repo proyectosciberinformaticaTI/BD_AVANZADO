@@ -1,0 +1,37 @@
+/****** Ejercicios***/
+Use Negocios
+go
+
+/*Crear una función, que reciba como parametro, el nombre, apellido y
+fecha de nacimiento, luego devolver un código generado de la siguiente
+manera;
+2da letra del apellido, año de nacimiento, 2 primeras letra del nombre y las 3 ultimas
+letras del apellido*/
+Create Function dbo.fnGenCode
+(
+	@p_nombre		varchar(40),
+	@p_apellido	varchar(40),	
+	@p_fechanac	date
+)
+Returns Varchar(15)
+As
+Begin
+		Declare @v_code Varchar(10)
+		set @v_code = Upper(SUBSTRING(@p_apellido,2,1)+Ltrim(Str(year(@p_fechanac)))+
+									Left(@p_nombre,2)+Right(@p_apellido,3))
+		Return @v_code
+End
+go
+
+--Comprobar
+Print dbo.fnGenCode('Luis','Alvarez','10/12/80')
+go
+
+--Usando función en consulta
+Select	IdEmpleado,
+			NomEmpleado,
+			ApeEmpleado,
+			FecNac,
+			dbo.fnGenCode(NomEmpleado, ApeEmpleado, FecNac) as [NewCode]
+from rrhh.empleados
+go

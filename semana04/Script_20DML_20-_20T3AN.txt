@@ -1,0 +1,128 @@
+--poner en uso la bd master
+use master
+go
+--crear la bd usuario sin definicion
+create database BD_Aeropuerto
+go
+--poner en uso la bd creada
+use BD_Aeropuerto
+go
+--crear esquema
+create schema ventas
+go
+--crear tablas
+--pais
+create table ventas.pais(
+codpais char(3)not null,
+nompais varchar(25)not null)
+go
+--agregar restriccion primary key
+alter table ventas.pais
+add constraint pk_codpais primary key(codpais)
+go
+--pasajero
+create table ventas.pasajero(
+codpas char(3)not null,
+nompas varchar(25)not null,
+apepas varchar(25)not null,
+telpas char(15)null,
+corpas varchar(30)null,
+codpais char(3)not null)
+go
+--agregando primary key
+alter table ventas.pasajero
+add constraint pk_codpas primary key(codpas)
+go
+--agregando foreign key
+alter table ventas.pasajero
+add constraint fk_codpais foreign key(codpais)
+references ventas.pais
+go
+/*agregando registros INSERT*/
+--tabla pais
+insert into ventas.pais(codpais, nompais)
+values('P01','Peru')
+go
+insert into ventas.pais
+values('P02','Ecuador')
+go
+--verificar
+select * from ventas.pais
+go
+insert into ventas.pais values
+('P03','Colombia'),
+('P04','Brasil'),
+('P05','Bolivia'),
+('P06','Argentina'),
+('P07','Uruguay'),
+('P08','Paraguay')
+go
+--verificar
+select * from ventas.pais
+go
+/*agregando archivos externos BULK INSERT*/
+bulk insert ventas.pais
+from 'C:\paises.txt'
+with (fieldTerminator=',')
+go
+--verificar
+select * from ventas.pais
+go
+/*agregando registros con valores null*/
+--agregando algunas columnas
+insert into ventas.pasajero(codpas,nompas,apepas,corpas, codpais)
+values('J01','Luis','Rios Tello','luis12@gmail.com','P01')
+go
+insert into ventas.pasajero
+values('J02','Mara','Santos Rios',NULL,NULL,'P02')
+go
+--ver
+select * from ventas.pasajero
+/*eliminar registros con DELETE*/
+--borrar una fila
+delete from ventas.pasajero
+where codpas='J01'
+go
+--ver
+select * from ventas.pasajero
+go
+--borrar todas las filas
+--forma1
+delete from ventas.pasajero --mas lento
+go
+--forma2
+truncate table ventas.pasajero --mas rapido
+go
+--ver
+select * from ventas.pasajero
+go
+/*actualizar registros UPDATE*/
+update ventas.pais set nompais='Brazil'
+where codpais='P04'
+GO
+--ver
+select * from ventas.pais where codpais='P04'
+go
+--caso: reemplazar el nombre de pais mexico por EE.UU
+update ventas.pais
+set nompais='EE.UU'
+where codpais='P09'
+go
+--ver
+select * from ventas.pais where codpais='P09'
+go
+/*escenarios MERGE*/
+Declare @pais varchar(50), @id char(3)
+Set @pais='China'
+Set @id='P17'
+MERGE ventas.pais As target
+USING (Select @id, @pais) As source (codpais, nompais)
+ON (target.codpais = source.codpais)
+WHEN MATCHED THEN
+	Update  Set nompais = source.nompais
+WHEN NOT MATCHED THEN
+	Insert  Values(source.codpais, source.nompais);
+go
+--ver
+select * from ventas.pais where codpais='P17'
+go

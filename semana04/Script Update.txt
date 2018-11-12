@@ -1,0 +1,40 @@
+/*Update*/
+Use Negocios
+go
+
+--Visualizar registros de la tabla Cliente
+Select * from Ventas.clientes
+go
+
+/*Actualizar los datos del cliente Cactu*/
+Update Ventas.clientes
+Set		NomCliente		= 'Bembos Burger',
+			DirCliente			= 'Las Begonias 444',
+			idpais				= '001',
+			fonoCliente		= '(51)12832474'
+Where IdCliente = 'CACTU'
+go
+
+--Visualizar registros de la tabla Cliente
+Select * from Ventas.clientes
+go
+
+--Abrir la Base de datos Northwind
+Use NORTHWND
+go
+
+/*Consultar*/
+Select * from dbo.Products
+go
+
+Select * from dbo.Suppliers
+go
+
+/*Actualizar el precio de los productos incrementando 10%, solo si han sido suministrados
+ por proveedores de Alemania (Germany)*/
+ Update Products
+ Set UnitPrice	= UnitPrice * 1.10
+ Where SupplierID IN (Select	SupplierID
+										From Suppliers
+										Where Country = 'Germany')
+go

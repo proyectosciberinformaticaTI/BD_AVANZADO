@@ -1,0 +1,17 @@
+/*Restaurando con otro nombre*/
+use master
+go
+
+/*Conocer los archivos que han sido respaldados y su ubicación*/
+Restore FileListOnly 
+From Disk='C:\Respaldo\BackupNegociosFull2.bak'
+go
+
+/*Restaurar la BD con otro nombre y en otra ubicación, para efecto de revisar y comprobar que es la
+restauración correcta*/
+Restore Database Negocios_Test
+From Disk='C:\Respaldo\BackupNegociosFull2.bak'
+With Recovery,
+Move 'Negocios' to 'c:\datosPrueba\Negocios.MDF',
+Move 'Negocios_log' to 'c:\datosPrueba\Negocios_log.LDF'
+go

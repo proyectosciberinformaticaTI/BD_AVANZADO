@@ -1,0 +1,31 @@
+/*Funciones de Tabla en linea*/
+Use Negocios
+go
+
+/*Ejemplo sin parametros*/
+Create Function dbo.fntClientes()
+	Returns Table
+As 
+Return (Select C.IdCliente, C.NomCliente, 
+						C.DirCliente, P.NombrePais, 
+						C.fonoCliente
+			From Ventas.clientes C Join Ventas.paises P
+			On C.idpais = P.Idpais)
+go
+
+--Comprobar la función
+Select * from dbo.fntClientes()
+go
+
+--Crear la función de tabla en linea que permita mostrar los productos de una determinada
+--categoria
+Create Function dbo.fnTProductos(@p_idcategoria int)
+Returns Table
+As
+Return (Select * from Compras.productos
+				Where IdCategoria =@p_idcategoria)
+go
+
+--Comprobar la función
+Select * from dbo.fnTProductos(4)
+go

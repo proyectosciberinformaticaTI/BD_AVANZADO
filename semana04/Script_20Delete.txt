@@ -1,0 +1,8 @@
+/*Script Delete*/
+Use Negocios
+go
+
+/*Eliminar los clientes cuyo codigo inicie con 'C0'*/
+Delete From Ventas.clientes
+Where IdCliente Like 'C0%'
+go

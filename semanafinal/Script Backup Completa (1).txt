@@ -1,0 +1,29 @@
+Use master
+go
+
+--Respaldando la BD Completa
+Backup Database Negocios
+To Disk = 'C:\Respaldo\NegociosBackupFull1.Bak'
+with init
+go
+
+--Respaldando la BD Completa utilizando un Device (Dispositivo) definido en el servidor
+--Paso 1 Crear el Device (Dispositivo) del servidor
+EXEC sp_addumpdevice  
+@devtype = 'Disk', 
+@logicalname = 'MiRespaldo', 
+@physicalname = 'C:\Respaldo\BackupNegociosFull2.Bak'
+GO
+
+--Paso 2 Crear el backup en el dispositivo de servidor 
+Backup Database Negocios
+To MiRespaldo
+go
+
+---Ejercicio
+EXEC sp_addumpdevice   'Disk', 'TuRespaldo', 'C:\Respaldo\BackupNegociosFull3.Bak'
+GO
+
+Backup Database Negocios
+to TuRespaldo
+go

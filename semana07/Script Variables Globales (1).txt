@@ -1,0 +1,13 @@
+/*Variables Globales*/
+Use Negocios
+go
+
+--La version del SQL Server
+Print 'Version:' + @@version
+--Lenguaje del aplicativo
+Print 'Lenguaje:'+@@language
+--Nombre del servidor
+Print 'Servidor:'+@@servername
+--Nro. de conexiones permitidas
+Print 'Conexiones:'+ str(@@max_connections)
+Go 

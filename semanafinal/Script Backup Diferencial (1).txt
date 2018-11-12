@@ -1,0 +1,21 @@
+/*Backup Diferencial*/
+use master
+go
+
+/*Primero crear un Backup Full*/
+Backup Database Negocios
+to Disk = 'C:\Respaldo\BFNegocios.Bak'
+With Init
+go
+
+/*Asumiendo que estamos en el segundo dia, crear el BK Diferencial1*/
+Backup Database Negocios
+to Disk = 'C:\Respaldo\BDiff01Negocios.Bak'
+with Differential
+go
+
+/*Asumiendo que eatamos al final del tercer dia, crear el BK Diferencial2*/
+Backup Database Negocios
+to Disk = 'C:\Respaldo\BDiff02Negocios.Bak'
+with Differential
+go

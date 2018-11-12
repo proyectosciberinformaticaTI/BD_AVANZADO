@@ -1,0 +1,33 @@
+/*Script Manejo de excepcion de Errores*/
+Use Negocios
+go
+
+/*Consultar*/
+Select *  from Ventas.clientes
+go
+
+/*Eliminar un registro*/
+Delete From Ventas.clientes
+where IdCliente = 'ALFKI'
+go
+
+/*Manejando excepción de errores*/
+Begin Try
+	Delete From Ventas.clientes
+	where IdCliente = 'ALFKI'
+End Try
+Begin Catch
+	Print 'Error excepcionado'
+End Catch
+go
+
+/*Manejando excepción de errores Usando @@Error*/
+Begin Try
+	Delete From Ventas.clientes
+	where IdCliente = 'ALFKI'
+End Try
+Begin Catch
+	If @@error = 547
+			Print 'No se puede eliminar por integridad referencial'
+End Catch
+go

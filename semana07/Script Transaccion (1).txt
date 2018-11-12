@@ -1,0 +1,86 @@
+/*Transaccciones*/
+
+Use Negocios
+go
+
+/*Transacción Implícita*/
+Select * from Compras.categorias
+go
+
+--Usando Bloques
+Declare @v_IdCat smallint = 1999
+Declare @v_NomCat varchar(50) = 'Especerias'
+Insert into Compras.categorias
+Values
+(@v_IdCat, @v_NomCat, null)
+go
+
+--Comprobando
+Select * from Compras.categorias
+go
+
+/* Transaccciones Explícitas*/
+Begin Tran T1
+	Declare @v_IdCat smallint = 2199
+	Declare @v_NomCat varchar(50) = 'Especerias'
+	Insert into Compras.categorias
+	Values
+	(@v_IdCat, @v_NomCat, null)
+	If @v_NomCat In (Select NombreCategoria From Compras.categorias)
+		RollBack Tran T1
+	Else 
+		Commit Tran T1
+go
+
+--Confirmar
+Select * from Compras.categorias
+go
+
+-------Optimizando  con variable Table------
+Declare @v_IdCat smallint = 2599
+Declare @v_NomCat varchar(50) = 'Esp'
+Declare @v_table Table (nomcat varchar(15) )  
+Insert @v_table
+Select NombreCategoria	from Compras.categorias
+Begin Tran T1
+	Insert into Compras.categorias
+	Values
+	(@v_IdCat, @v_NomCat, null)
+	If @v_NomCat Not In (Select  * from @v_table)
+		Commit Tran T1
+	Else
+		RollBack Tran T1
+go
+
+--Confirmar
+Select * from Compras.categorias
+go
+
+-------Optimizando  bloque anterior con Try Catch------
+Declare @v_IdCat smallint = 2699
+Declare @v_NomCat varchar(50) = 'Esp'
+Declare @v_table Table (nomcat varchar(15) )  
+Insert @v_table
+Select NombreCategoria	from Compras.categorias
+Begin Try
+Begin Tran T1
+	Insert into Compras.categorias
+	Values
+	(@v_IdCat, @v_NomCat, null)
+	If @v_NomCat Not In (Select  * from @v_table)
+		Commit Tran T1
+	Else
+		RollBack Tran T1
+End Try
+Begin Catch
+	Print 'Codigo repetido'
+End Catch
+go
+
+--Confirmar
+Select * from Compras.categorias
+go
+
+/*Efectue una transacción explícita para registrar nuevos proveedores,
+en caso el nombre del proveedor no se repita, se confirma la transacción,
+de lo contrario, deshacer*/

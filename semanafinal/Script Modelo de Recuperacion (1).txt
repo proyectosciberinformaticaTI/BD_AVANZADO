@@ -1,0 +1,13 @@
+Use master
+
+--Modelo de recuperación Simple
+ALter Database Negocios Set recovery Simple
+go
+
+--Modelo de recuperación carga masiva
+ALTER DATABASE [Negocios] SET RECOVERY BULK_LOGGED 
+go
+
+--Modelo de recuperación Completa
+ALter Database Negocios Set recovery Full
+go

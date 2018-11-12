@@ -1,0 +1,43 @@
+Use Negocios
+go
+
+/*Crear un trigger que indique el registre que se ha operado*/
+Create Trigger TROpCatego
+On Compras.Categorias
+For Insert,Update,Delete
+As
+Begin
+		Set nocount On
+		Declare @v_regOld  Varchar(max)
+		Declare @v_regNew Varchar(max)
+		Set @v_regOld = (Select NombreCategoria+space(1)
+												From deleted)
+		Set @v_regNew = (Select NombreCategoria+space(1)
+												From inserted)
+		If Exists(Select * from inserted) And Exists(Select * from deleted)
+			Begin
+				Print 'Ud actualizó el registro ' + @v_regOld
+				Print 'Por el registro '+@v_regNew
+			End
+		Else If Exists(Select * from inserted) 
+					Print 'Ud ingresó el registro ' + @v_regNew
+				Else 
+					Print 'Ud. eliminó el registro ' + @v_regOld
+		set nocount off
+End
+go
+
+--Comprobar
+Insert Compras.categorias
+Values
+('88', 'Proteinas',null)
+go
+
+Update Compras.categorias
+Set NombreCategoria = 'Carbohidratos'
+Where IdCategoria = 88
+go
+
+Delete from Compras.categorias
+where IdCategoria = 88
+go

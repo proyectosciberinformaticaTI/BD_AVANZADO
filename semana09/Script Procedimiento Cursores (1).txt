@@ -1,0 +1,34 @@
+/*Procedimientos con cursores*/
+Use Negocios
+go
+
+/*Crear un cursor dentro del procedimiento*/
+--Crear el Plan
+Create Procedure USP_ProCur
+@p_idCliente varchar(10)
+As
+Begin
+	Declare CursorCliPed Cursor For Select IdPedido, FechaPedido from Ventas.pedidoscabe
+															Where IdCliente = @p_idCliente
+	Declare @vc_idped int, @vc_fecped date
+	Open CursorCliPed
+	Fetch CursorCliPed Into @vc_IdPed, @vc_fecped
+	Print space(5) + 'Pedido' + space(10)+'Fecha'
+	Print Replicate('=',50)
+	While @@FETCH_STATUS = 0
+		Begin
+			Print space(5)+cast(@vc_Idped as Varchar(10))+ space(10) + Cast(@vc_fecped As varchar(12))
+			Fetch CursorCliPed Into @vc_IdPed, @vc_fecped
+		End
+	Close CursorCliPed
+	Deallocate CursorcliPed
+End
+go
+
+--Ejecutar plan
+Execute USP_ProCur 'ALFKI'
+go
+
+--Ejecutar plan
+Execute USP_ProCur 'ANTON'
+go

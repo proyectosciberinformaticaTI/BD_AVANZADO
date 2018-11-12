@@ -1,0 +1,56 @@
+/*************** SOLUCION **************/
+CREATE PROCEDURE USP_VerClientes
+AS
+BEGIN
+	SELECT C.IdCliente,C.NomCliente,C.DirCliente,P.NombrePais,C.fonoCliente 
+	FROM Ventas.clientes AS C INNER JOIN Ventas.paises AS P
+	ON C.idpais = P.Idpais
+END
+GO
+
+CREATE PROCEDURE USP_VerProductos
+AS
+BEGIN
+	SELECT P.IdProducto,P.NomProducto,PR.NomProveedor,C.NombreCategoria,
+	P.CantxUnidad,P.PrecioUnidad,P.UnidadesEnExistencia,P.UnidadesEnPedido 
+	FROM Compras.productos AS P INNER JOIN Compras.categorias AS C
+	ON P.IdCategoria = C.IdCategoria 	INNER JOIN Compras.proveedores AS PR
+	ON P.IdProveedor = PR.IdProveedor
+END
+GO
+
+CREATE PROCEDURE USP_VerVentas
+AS
+BEGIN
+	SELECT PC.IdPedido,PC.IdCliente,PC.IdCliente,PC.IdEmpleado,PC.FechaPedido,PC.FechaEntrega,
+	PC.FechaEnvio,PC.Destinatario,PD.IdProducto,PD.PrecioUnidad,PD.Cantidad,
+	PD.Descuento 
+	FROM Ventas.pedidoscabe AS PC INNER JOIN Ventas.pedidosdeta AS PD
+	ON PC.IdPedido = PD.IdPedido
+END
+GO
+
+CREATE PROCEDURE USP_Consultas
+@p_DatoConsultar VARCHAR(MAX)
+
+AS
+BEGIN
+	IF @p_DatoConsultar = 'cliente' --CLIENTES
+		BEGIN
+			EXECUTE USP_VerClientes
+		END
+	IF @p_DatoConsultar = 'producto' --PRODUCTO
+		BEGIN
+			EXECUTE USP_VerProductos
+		END
+	IF @p_DatoConsultar = 'pedido' --VENTAS
+		BEGIN
+			EXECUTE USP_VerVentas
+		END
+	ELSE
+		PRINT('NO EXISTE DATO A CONSULTAR')
+END
+GO
+
+Execute USP_Consultas 'CLIENTE' 
+go

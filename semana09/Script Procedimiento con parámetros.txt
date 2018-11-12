@@ -1,0 +1,34 @@
+/*Procedimiento almacenados: Manejo de parámetros*/
+Use Negocios
+go
+
+/*Crear un procedimiento con Parámetro de entrada y de salida*/
+--Crear el plan
+Create Procedure USP_003
+	@p_idcliente char(10),
+	@p_CanPed Smallint OutPut
+As
+Begin
+	Set @p_CanPed = (Select Count(IdPedido)
+										From Ventas.pedidoscabe
+										Where IdCliente = @p_idcliente)
+End
+go
+
+--Ejecutar el plan dentro de un Bloque
+Begin
+	Declare @v_idcliente char(10) = 'ANTON'
+	Declare @v_CantidadPed smallint
+	Execute USP_003 @p_idcliente = @v_idcliente, @p_canped = @v_CantidadPed OutPut
+	Print 'El Cliente: '+@v_idcliente
+	Print 'Ha realizado '+Cast(@v_CantidadPed As Varchar(15))+' pedidos'
+End
+
+
+
+
+
+
+
+
+

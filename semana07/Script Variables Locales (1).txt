@@ -1,0 +1,23 @@
+/*Variables Locales*/
+Use Negocios
+go
+
+--Ejemplo 1
+Declare @v_precio decimal
+Set @v_precio = 50
+Select * From Compras.Productos P
+Where P.precioUnidad >  @v_precio 
+Go
+
+--Ejemplo 2
+Declare @mx decimal
+Select @mx=MAX(precioUnidad) from Compras.productos
+--imprimir los valores de las variables
+print 'Mayor Precio mas alto es:'+str(@mx)
+go
+
+--Ejemplo 3
+Declare @v_mn decimal
+Select @v_mn = MIN(PrecioUnidad) From Compras.productos
+Print 'El precio mas bajo es:'+str(@v_mn)
+go

@@ -1,0 +1,75 @@
+/* Trigger*/
+/*REPASO*/
+
+USE Sistema_Comercial 
+GO
+
+/*CREAMOS TRIGGER*/
+CREATE TRIGGER TR_Productos
+ON Compras.Productos
+FOR INSERT, UPDATE, DELETE
+AS
+PRINT 'Actualizacion de los registros de Productos'
+
+/*ACTUALIZAMOS EL TRIGGER*/
+ALTER TRIGGER TR_Productos
+ON Compras.Productos
+FOR INSERT, UPDATE, DELETE
+AS
+PRINT 'Modificando Registros de la Tabla de Productos'
+
+/*ELIMINAMOS TRIGGER*/
+DROP TRIGGER COMPRAS.TR_Productos
+
+/*Cree un TRIGGER que permita insertar los datos de un Producto
+ siempre y cuando la descripción o nombre del producto sea único.*/
+CREATE TRIGGER TR_PRODUCTO_INSERTA
+ON Compras.Productos
+FOR INSERT
+AS
+IF  (Select  count (*) From	INSERTED, Compras.Productos
+Where INSERTED.NomProducto = Productos.nomProducto) >1
+BEGIN
+	Rollback transaction
+	PRINT 'La descripción del Producto SE ENCUENTRA registrado'
+END
+ELSE
+	PRINT 'El Producto fue ingresado en la base de datos'
+
+SELECT * FROM COMPRAS.PRODUCTOS 
+GO
+
+Insert COMPRAS.PRODUCTOS
+Values
+(79,'Carne Industrial',26,5,'45 bolsas',45,100,5)
+go
+
+/*Eliminación*/
+/*Cree un TRIGGER el cual permita eliminar Clientes los cuales no han 
+registrado algún pedido.  De eliminarse algún Cliente que no cumpla con 
+dicha condición la operación no deberá ejecutarse*/
+
+CREATE TRIGGER TR_ELIMINAR
+ON Ventas.Clientes
+FOR Delete
+AS
+IF EXISTS (SELECT * FROM Ventas.pedidosCabe
+WHERE pedidoscabe.idCliente = (SELECT idcliente FROM DELETED) )
+Begin
+		Rollback transaction
+		print 'El Cliente tiene registrado por lo menos 1 pedidos'
+End
+
+/*Cree un TRIGGER  que valide el precio unitario y su Stock
+de un producto, donde dichos datos sean mayores a cero.*/
+CREATE TRIGGER TR_ACTUALIZAR_PRODUCTO
+ON Compras.Productos
+FOR UPDATE
+AS
+IF (SELECT precioUnidad  FROM Inserted) <=0 AND 
+(SELECT UnidadesEnExistencia FROM INSERTED)<=0
+BEGIN
+	PRINT 'El precio o UnidadesEnExistencia deben ser mayor a CERO'
+	ROLLBACK TRANSACTION
+END
+

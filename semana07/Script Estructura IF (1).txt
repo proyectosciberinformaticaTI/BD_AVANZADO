@@ -1,0 +1,19 @@
+/* Estructura IF*/
+Use Negocios
+go
+
+/*Estructura*/
+
+DECLARE @idemp int, @cantidad int        
+SET @idemp = 6       
+--Recuperar la cantidad de pedidos del empleado de codigo 6
+SELECT @cantidad = COUNT(*)
+FROM Ventas.pedidoscabe WHERE IdEmpleado = @idemp
+--Evalua el valor de cantidad
+IF  @cantidad = 0        
+	PRINT 'El empleado no ha realizado algún pedido'        
+ELSE IF @cantidad = 1
+	PRINT 'Ha registrado 1 pedido, continúe trabajando'       	
+ELSE
+	PRINT 'Ha registrado muchos pedidos'   
+GO

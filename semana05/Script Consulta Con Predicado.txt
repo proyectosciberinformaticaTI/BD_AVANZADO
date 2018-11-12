@@ -1,0 +1,33 @@
+/*Script de Cosnultas con Predicado*/
+Use Negocios
+go
+
+/*Predicado ALL (*)*/
+Select *
+From Compras.productos
+go
+
+---
+Select All *
+From Compras.productos
+go
+
+/*Predicado TOP */
+--Los 03 Productos mas caros
+Select top 3  *
+From Compras.productos
+Order by PrecioUnidad Desc
+go
+
+--El quinto superior de productos mas baratos
+Select top 20 Percent *
+From Compras.productos
+order by PrecioUnidad Asc
+go
+
+
+/*Predicado Disctinct*/
+--Muestre las categorias de los productos
+Select DISTINCT IdCategoria
+From Compras.productos
+go

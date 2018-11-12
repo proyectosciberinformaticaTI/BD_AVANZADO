@@ -1,0 +1,34 @@
+/*Funciones*/
+
+Use Negocios
+go
+
+/*Existen 02 Tipos de funciones en SQL Server:
+	1. Las funciones del Sistema SQL Server  (Ya estan definidas)
+	2. Las funciones definidas por el usuario (DFU) 
+		2.1	Funciones escalares
+		2.2	Funciones de tabla en línea
+		2.3	Funciones Multisentencias
+	*/
+
+	/*1. Algunas funciones del sistema*/
+
+	Print getdate()
+
+	Print replicate('*',50)
+
+	Print Datename(mm,'21/02/2015')
+	
+	Print Datename(dw,'21/02/2015')
+
+	Print Datepart(mm,'21/02/2015')
+	
+	Print Datepart(dw,'21/02/2015')
+
+	Declare @v_nombre Varchar(20)= 'javier'
+	Declare @v_apellido varchar(20)='NAPAN'
+	Print Upper(@v_nombre)
+	Print Lower(@v_apellido)
+
+
+	Select upper(Left('Javier',2) + Right('Napan',2) + SUBSTRING('Tarmeño',2,2)+ltrim(str(Year('21/02/1975'))))

@@ -1,0 +1,81 @@
+/*Funciones definidas por el usuario*/
+/*1. Funciones Escalares*/
+Use Negocios
+go
+
+--Crear una funcion escalar que devuelva el resultado de la suma de 02 números
+Create Function dbo.Suma
+	(@p_n1 smallint, @p_n2 smallint)
+	Returns Smallint
+As
+Begin
+	Declare @v_resultado Smallint
+	Set @v_resultado = @p_n1 + @p_n2
+	Return @v_resultado
+End
+go
+
+--Comprobar la función (simple)
+Print dbo.suma(5,10)
+go
+
+--Crear la función escalar que devuelva el descuento de un precio
+Create Function dbo.fnDescuento
+	(@p_precio smallmoney, @p_porcentaje numeric(5,2))
+	Returns smallmoney
+As
+Begin
+	Declare @v_dscto	smallmoney
+	Set @v_dscto = @p_precio * (@p_porcentaje/100)
+	Return @v_dscto
+End
+go
+
+--Comprobar (simple)
+Print dbo.fnDescuento (12.50,35.5)
+go
+
+--Comprobar (Consulta)
+Select	NomProducto,
+			PrecioUnidad,
+			dbo.fnDescuento(PrecioUnidad,10) As Descuento
+From Compras.productos
+go
+
+--Crear una función escalar que obtenga la cantidad de productos
+--de una determinada categoría
+Create Function dbo.fnObtCantXCateg
+	(@p_idCat int)
+	Returns Int
+As
+Begin
+	Declare @v_cant int
+	Set @v_cant =(Select count(IdProducto)
+								From Compras.productos
+								Where IdCategoria = @p_idCat)
+	Return @v_cant
+End
+go
+
+--Comprobar de forma simple
+	Print dbo.fnObtCantXCateg(2)
+	go
+
+--Comprobar la funciuón dentro de una consulta
+Select	NombreCategoria,
+			dbo.fnObtCantXCateg(IdCategoria) [CantidaddeProductos]
+From Compras.categorias
+go
+
+--Sin uso de la funcion, la consulta sería
+Select	C.NombreCategoria,
+			Count(P.IdProducto) As [CantidaddeProducto]
+From Compras.categorias C left Join Compras.productos P
+		On C.IdCategoria = P.IdCategoria
+Group By C.NombreCategoria
+order by 2 desc
+go
+
+
+
+

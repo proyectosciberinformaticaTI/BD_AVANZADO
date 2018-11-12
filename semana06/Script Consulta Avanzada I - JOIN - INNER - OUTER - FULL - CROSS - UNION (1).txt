@@ -1,0 +1,124 @@
+/*Consultas Avanzadas*/
+Use Negocios
+go
+
+/*Combinar tablas (Where)*/
+Select	PR.IdProducto,
+			PR.NomProducto,
+			PV.NomProveedor,
+			PR.PrecioUnidad
+From Compras.proveedores PV , Compras.productos PR
+Where PV.IdProveedor = PR.IdProveedor
+go
+
+/*Combinar tablas (Join)*/--Recomendado
+Select	PR.IdProducto,
+			PR.NomProducto,
+			PV.NomProveedor,
+			PR.PrecioUnidad
+From Compras.proveedores PV JOIN Compras.productos PR
+		On PV.IdProveedor = PR.IdProveedor
+go
+
+/*Combinar 03 Tablas */
+Select	PR.IdProducto,
+			PR.NomProducto,
+			PV.NomProveedor,
+			CA.NombreCategoria,
+			PR.PrecioUnidad
+From Compras.proveedores PV JOIN Compras.productos PR 
+		On PV.IdProveedor = PR.IdProveedor JOIN Compras.categorias CA
+		On PR.IdCategoria = Ca.IdCategoria
+go
+
+/****** INNER JOIN **********/--Interna (Muestra solo los que coinciden en la comparación)
+Select	PR.IdProducto,
+			PR.NomProducto,
+			PV.NomProveedor,
+			PR.PrecioUnidad
+From Compras.proveedores PV INNER JOIN Compras.productos PR
+		On PV.IdProveedor = PR.IdProveedor
+go
+
+/*Combinar 03 Tablas  */
+Select	PR.IdProducto,
+			PR.NomProducto,
+			PV.NomProveedor,
+			CA.NombreCategoria,
+			PR.PrecioUnidad
+From Compras.proveedores PV INNER JOIN Compras.productos PR 
+		On PV.IdProveedor = PR.IdProveedor INNER JOIN Compras.categorias CA
+		On PR.IdCategoria = Ca.IdCategoria
+go
+
+/***** OUTER JOIN ********/
+--Externa (Muestra los que coinciden y los que no coinciden en la comparación
+--Hay 03 tres tipos
+--LEFT OUTER JOIN 
+--(Muestra los que coinciden y los que no coinciden en la comparación con la tabla del lado Izquierdo)
+Select	CL.*,
+			PC.* 
+From Ventas.clientes CL LEFT JOIN Ventas.pedidoscabe PC
+	On CL.IdCliente = PC.IdCliente
+go
+
+--Insertemos un par de nuevos clientes
+Insert Ventas.clientes
+Values
+('CL001','Alicorp','Av Argentina 111','001','222222'),
+('CL002','Donofrio','Av Venezuela 345','002','333333')
+go
+
+--Volver a ejecutar la consulta
+Select	CL.*,
+			PC.* 
+From Ventas.clientes CL  LEFT JOIN Ventas.pedidoscabe PC
+	On CL.IdCliente = PC.IdCliente
+go
+
+--RIGHT OUTER JOIN 
+--(Muestra los que coinciden y los que no coinciden en la comparación con la tabla del lado Derecho)
+Select	CL.*,
+			PC.* 
+From Ventas.clientes CL RIGHT JOIN Ventas.pedidoscabe PC
+	On CL.IdCliente = PC.IdCliente
+go
+
+--Insertemos un par de nuevos Pedidos
+Insert Ventas.pedidoscabe
+Values
+('9999',Null,Null,getdate(),Getdate()+1,Getdate()+3,0,30,'Tortugas Restau','Las Gacelas 111','Lima',null,'1734','Peru'),
+('8888',Null,Null,getdate(),Getdate()+1,Getdate()+3,0,30,'Popeyes Restau','Los Galgos 111','Comas',null,'1731','Peru')
+go
+
+--Volver a ejecutar
+Select	CL.*,
+			PC.* 
+From Ventas.clientes CL RIGHT JOIN Ventas.pedidoscabe PC
+	On CL.IdCliente = PC.IdCliente
+go
+
+--FULL OUTER JOIN 
+--(Muestra los que coinciden y los que no coinciden en la comparación con ambas tablas)
+Select	CL.*,
+			PC.* 
+From Ventas.clientes CL FULL JOIN Ventas.pedidoscabe PC
+	On CL.IdCliente = PC.IdCliente
+go
+
+/*Combinación Cruzada*/
+Select PR.NomProducto,
+			PV.NomProveedor
+From Compras.productos PR Cross Join Compras.proveedores PV
+Order by PR.NomProducto
+GO
+
+/*UNION*/
+Select NomCliente		As [Invitado],
+			'Cliente	'			As [Tipo]
+From Ventas.clientes
+	UNION
+Select NomProveedor As [Invitado],
+			'Proveedor'		As [Tipo]
+from Compras.proveedores
+go

@@ -1,0 +1,71 @@
+/*Cursores*/
+Use Negocios
+go
+
+/*Cursor tipo Scroll*/
+--Declaro el cursor tipo Scroll
+Declare Cursor1 Cursor Scroll For Select * from Compras.categorias
+--Abrir el cursor
+Open Cursor1
+--Leer registro del cursor
+Fetch First From Cursor1
+Fetch Absolute 5 From Cursor1
+Fetch Last From Cursor1
+--Cerrar el cursor
+Close Cursor1
+--Liberar de memoria el cursor
+Deallocate Cursor1
+go
+
+/*Cursor de consulta*/
+Declare Cursor2 Cursor For Select NomCliente, DirCliente from Ventas.clientes
+Declare @vc_NomCli Varchar(50), @vc_DirCli varchar(50)
+Open Cursor2
+Fetch Cursor2 Into @vc_Nomcli, @vc_Dircli
+Print Space(25)+'REPORTE DE CLIENTES'
+Print Space(25)+Replicate('*',25)
+While @@FETCH_STATUS=0
+	Begin
+		Print 'Nombre del Cliente: '+@vc_NomCli
+		Print 'Dirección Cliente    ; '+@vc_DirCli
+		Print ''
+		Fetch Cursor2 Into @vc_Nomcli, @vc_Dircli
+	End
+Print Replicate ('*',50)
+Close Cursor2
+Deallocate Cursor2
+go
+
+
+/*Cursor de consulta Anidados*/
+Declare Cursor2 Cursor For Select Idcliente, NomCliente, DirCliente from Ventas.clientes
+Declare @vc_Idcli char(5), @vc_NomCli Varchar(50), @vc_DirCli varchar(50)
+Open Cursor2
+Fetch Cursor2 Into @vc_Idcli, @vc_Nomcli, @vc_Dircli
+Print Space(25)+'REPORTE DE CLIENTES'
+Print Space(25)+Replicate('*',25)
+While @@FETCH_STATUS=0
+	Begin
+		Print 'Nombre del Cliente: '+@vc_NomCli
+		Print 'Dirección Cliente    ; '+@vc_DirCli
+		Print ''
+		Declare CursorAni1 Cursor For Select IdPedido, FechaPedido  From Ventas.pedidoscabe
+														   Where IdCliente=@vc_Idcli
+		Declare @vc_IdPed int, @vc_FecPed Date
+		Open CursorAni1
+		Fetch CursorAni1 Into @vc_IdPed, @vc_FecPed
+		While @@FETCH_STATUS =0
+			Begin
+				Print @vc_IdPed
+				Print @vc_FecPed
+				Print '-------------------------------------------------'
+				Fetch CursorAni1 Into @vc_IdPed, @vc_FecPed
+			End
+			Close CursorAni1
+			Deallocate CursorAni1
+		Fetch Cursor2 Into @vc_Nomcli, @vc_Dircli
+	End
+Print Replicate ('*',50)
+Close Cursor2
+Deallocate Cursor2
+go

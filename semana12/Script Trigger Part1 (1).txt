@@ -1,0 +1,73 @@
+/* Trigger*/
+Use Negocios
+go
+
+ If Exists (Select * from sys.triggers where name = 'trPais')
+	Drop Trigger dbo.trPais
+ go
+
+/*Crear un trigger a la tabla Pais, para cuando se inserte o
+actualice o se elimine un registro, se muestre un mensaje
+que indique: Se ha realizado una transacción*/
+Create Trigger  trPais
+on Ventas.Paises					--Se especifica la tabla
+For Insert, Update, Delete	--Se especifica la operación 
+As
+Begin
+	Print 'Se ha realizado una transacción'
+End
+go
+
+--Comprobar el efecto del trigger
+Insert Ventas.paises
+Values
+('777','Panamá')
+go
+
+Select * from Ventas.paises
+go
+
+--------------------------
+Update Ventas.paises
+Set NombrePais ='Jamaica'
+where Idpais='777'
+go
+
+---------------------------
+Delete From Ventas.paises
+where Idpais='777'
+go
+
+----Modificar el trigger
+Alter Trigger Ventas.trPais
+on Ventas.Paises					--Se especifica la tabla
+For Insert, Update, Delete	--Se especifica la operación 
+As
+Begin
+	If Exists (Select * from inserted) And Exists (Select * from Deleted)
+		Print 'Se ha realizado una transacción Actualización'
+	Else if  Exists (Select * from inserted)
+				Print 'Se ha realizado una transacción Inserción'
+			Else	
+				Print 'Se ha realizado una transacción Eliminación'
+End
+
+--Comprobar el efecto del trigger
+Insert Ventas.paises
+Values
+('777','Panamá')
+go
+
+Select * from Ventas.paises
+go
+
+--------------------------
+Update Ventas.paises
+Set NombrePais ='Jamaica'
+where Idpais='777'
+go
+
+---------------------------
+Delete From Ventas.paises
+where Idpais='777'
+go
