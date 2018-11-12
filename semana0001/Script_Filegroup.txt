@@ -1,0 +1,107 @@
+/*Filegroups*/
+/*Crear una base de datos con una datafile y un logfile
+en la carpeta DATA*/
+Create Database BDLesson2
+On
+(name=Lesson2_Data,
+Filename='C:\Data\Lesson2_Data.MDF')
+Log On
+(
+name=Lesson2_Log,
+Filename='C:\Data\Lesson2_Log.LDF'
+)
+go
+
+/*Ver la estructura*/
+exec sp_helpdb  BDLesson2
+go
+
+/*Crear un nuevo datafile en la base de datos
+creada*/
+Alter Database BDLesson2
+Add file
+(
+name=Lesson2_DataN1,
+Filename='C:\Data\Lesson2_DataN1.NDF'
+)
+go
+
+/*Ver la estructura*/
+exec sp_helpdb  BDLesson2
+go
+
+/*Modificar la base de datos para adicionar 02
+Filegroups*/
+Alter Database BDLesson2
+Add Filegroup [FGAdmin]
+go
+
+Alter Database BDLesson2
+Add Filegroup [FGComercial]
+go
+
+/*Adicionar un nuevo datafile en la base de datos
+creada pero en el filegroup FGAdmin*/
+Alter Database BDLesson2
+Add File
+(
+name=Lesson2_DataN2,
+filename='C:\Data\Lesson2_DataN2.NDF'
+) to Filegroup [FGAdmin]
+go
+
+/*Ver la estructura*/
+exec sp_helpdb BDLesson2
+go
+
+/*Crear una tabla*/
+Use BDLesson2
+go
+
+Create Table TBEjemplo
+(
+cod char(5),
+nom varchar(10)
+)
+go
+
+/*Crear una tabla en el filegroup [FGAdmin]*/
+Create Table Personal
+(
+cod char(5),
+nom varchar(10)
+) on [FGAdmin]
+go
+
+/*Ejercicio*/
+/*Crear un nuevo Filegroup [FGcomercial]en la base de datos
+Lesson2*/
+Use master
+go
+
+/*Modificar la base de datos para adicionar un nuevo 
+datafile en el filegroup [FGComercial]*/
+Use master
+go
+
+
+/*Crear una tabla de datos clientes en la base de 
+datos BDLesson2 pero en el filegroup FGComercial*/
+use BDLesson2
+go
+
+Create Table ....
+(
+nomcli ....
+dircli ....
+)
+
+
+
+
+
+
+
+
+
+

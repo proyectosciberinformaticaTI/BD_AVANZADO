@@ -1,0 +1,66 @@
+/*Constraint Default*/
+Use BDLesson3
+go
+
+Create Table dbo.Producto
+(
+idProd			char(5)			not  null,
+nomProd		varchar(50)	not null,
+umeProd		varchar(50),
+preProd		smallMoney,
+catProd		varchar(50),
+tipProd			Varchar(20)
+)
+go
+
+/*Insertar 01 registro*/
+insert dbo.Producto 
+(idProd, nomProd)
+values
+('PRD01', 'Cua Cua')
+go
+
+--------
+insert dbo.Producto
+values
+('PRD02','Sublime',null,null,null,null)
+go
+
+/*Consultar*/
+Select * from dbo.Producto
+go
+
+/*Crear un valor por default a la tabla producto
+campo preprod, cuyo valor predefinido será 0*/
+Alter Table dbo.Producto
+Add constraint DFpreProd
+Default '0' For preProd
+go
+
+/*Crear un valor por default a la tabla producto
+campo tipProd, cuyo valor predefinido será Nacional*/
+Alter Table dbo.Producto
+Add constraint DFtipProd
+Default 'Nacional' for tipProd
+go
+
+/*Otra vez ingresar datos*/
+Insert dbo.Producto
+(idprod, nomprod)
+Values
+('PRD03','Arroz')
+go
+
+/*Mostrar los valores*/
+Select * from dbo.Producto
+go
+
+/*Insertar valores*/
+Insert dbo.Producto
+Values
+('PRD04','Azucar',null,default,null,default)
+go
+
+/*Mostrar los valores*/
+Select * from dbo.Producto
+go

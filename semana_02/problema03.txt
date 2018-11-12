@@ -1,0 +1,40 @@
+/*Manejo de Schemas*/
+--Creando base de Datos con opciones por default
+Create Database BDTienda
+go
+
+--Abrir la Base de datos
+Use BDTienda
+go
+
+/*Crear un un esquema en la base de datos*/
+Create Schema RRHH
+go
+
+Create Schema Sales
+go
+
+Create Schema Purchase
+go
+
+/*Ver los schemas*/
+Select * from sys.schemas
+go
+
+/*Creando un objeto tabla sin esquema definido*/
+Create Table Tabla1
+(
+cod	Char(5), 
+nom varchar(10)
+)
+go
+
+/*Crear un objeto tabla en el esquema definido RRHH*/
+Create Table RRHH.Personal
+(
+cod char(5),
+nom varchar(20)
+)
+go
+
+/*Crear un objeto tabla (Cliente) en el esquema SALES*/

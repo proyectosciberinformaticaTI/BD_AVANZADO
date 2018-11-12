@@ -1,0 +1,18 @@
+/*Constraint CHECK*/
+Use BDLesson3
+go
+
+/*Crear una restriccion Check al campo Umed
+de la tabla Producto*/
+Alter Table dbo.Producto
+Add Constraint CKumed
+Check (umeProd In ('Litro','Kilogramo', 'Unidad', 'SixPack', 'FourPack'))
+go
+
+/*Crear una restricci?n Check a la tabla Boleta
+campo fecBol, para que sea mayor o igual a la fecha actual.
+La restricci?n no afecta a los datos ya ingresados*/
+Alter Table Ventas.Boleta with nocheck
+Add Constraint CKfecbol
+Check (fecBol >= GetDate())
+go

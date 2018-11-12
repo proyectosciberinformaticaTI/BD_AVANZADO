@@ -1,0 +1,22 @@
+/*Uso del Identity*/
+Use BDLesson3
+go
+
+/*Consultar la tabla que tiene Identity*/
+Select * from Ventas.Boleta;
+go
+
+/*Reiniciar el identity en 2000*/
+dbcc CheckIdent ('Ventas.Boleta',Reseed,2000)
+go
+
+/*Ingresar nuevos valores a la tabla Boleta*/
+Insert Ventas.Boleta
+Values
+('10/10/2016',2500),
+('11/11/2016',4500)
+go
+
+/*Consultar la tabla que tiene Identity*/
+Select * from Ventas.Boleta;
+go

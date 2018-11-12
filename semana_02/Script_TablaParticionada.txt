@@ -1,0 +1,89 @@
+/*Tabla Paricionada*/
+/*Preparando la Base de Datos, y Filegroups*/
+/*Crear una base de datos*/
+Create Database BDTParticion
+go
+
+/*Creando particiones en la BD*/
+Alter Database BDTParticion
+add filegroup [FG2000B]
+go
+
+Alter Database BDTParticion
+add filegroup [FG2010B]
+go
+
+Alter Database BDTParticion
+add filegroup [FGOYEAR]
+go
+
+/*Adicionar un datafile (ubicado en la carpeta data) a cada Filegroup*/
+Alter Database BDTParticion
+Add File
+(
+name=TParticion_DataN1,
+Filename='C:\Data\TParticion_DataN1.NDF'
+) to filegroup [FG2000B]
+go
+
+Alter Database BDTParticion
+Add File
+(
+name=TParticion_DataN2,
+Filename='C:\Data\TParticion_DataN2.NDF'
+) to filegroup [FG2010B]
+go
+
+Alter Database BDTParticion
+Add File
+(
+name=TParticion_DataN3,
+Filename='C:\Data\TParticion_DataN3.NDF'
+) to filegroup [FGOYEAR]
+go
+
+/*Abrir la Base de datos*/
+Use BDTParticion
+go
+
+/**Primero se crea la función de partición*/
+Create Partition Function fnp_PedidoXdecada (date)
+As Range Right
+For Values ('2000-01-01','2010-01-01')
+go
+
+/**Luego se crea un esquema de partición*/
+Create Partition Scheme sp_Pedidoxdecada
+As Partition fnp_PedidoXdecada
+to ([FG2000B],[FG2010B],[FGOYEAR])
+go
+
+/*Ahora se crea la tabla particionada*/
+Create Table TBPedido
+(
+nroPedido	int			not null,
+idCliente	Char(5)		not null,
+fecPedido	Date		not null,
+monPedido	Smallmoney	not null
+)
+on sp_PedidoXdecada (fecPedido)
+go
+
+/*Configurar formato de fecha*/
+Set Dateformat DMY
+go
+
+/*Llenar datos*/
+Insert TBPedido
+Values
+('100','C01','10/10/99',1500),
+('104','C03','10/10/02',4500),
+('105','C09','10/10/15',1500)
+go
+
+/*Visualizar los registros de la tabla y en que partición se encuentra*/
+SELECT *,
+$PARTITION.fnp_PedidoXdecada(fecPedido) As [Nro de Particion]
+FROM TBPedido
+GO
+

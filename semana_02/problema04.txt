@@ -1,0 +1,24 @@
+/*Tipo de dato TABLE*/
+Use BDTienda
+go
+
+/*Crendo tipo de dato Table*/
+Create Type UDTCliente As Table
+(
+cod		Varchar(100) not null,
+nom		Varchar(100) not null,
+email	Varchar(100) not null
+)
+go
+
+/*Ahorar utilizamos el tipo tabla en una variabla
+llenamos registros y los mostramos*/
+Declare @vt_Cliente UDTCliente
+Insert @vt_Cliente
+Values
+('A01','Pepito','abc@hot.com'),
+('A02','Anita','A@hot.com'),
+('A03','Coco','Coco@yah.com')
+Select * from @vt_Cliente
+go
+

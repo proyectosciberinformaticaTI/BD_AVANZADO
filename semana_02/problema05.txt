@@ -1,0 +1,28 @@
+/*Tablas de datos*/
+Use BDTienda
+go
+
+/*Creando la tabla Vendedor, en el esquema Sales, en el filegroup Primary
+utilizando tipo de dato de usuario*/
+Create Table Sales.TBVendedor
+(
+nom_ven		cadena,
+fna_ven		fecha
+)
+on [Primary]
+go
+
+/*Modificar la estructura de la tabla para agregar un campo*/
+Alter Table Sales.TBVendedor
+Add ecivil char(1) not null
+go
+
+--Ver la estructura
+exec sp_help 'Sales.TBVendedor'
+go
+
+/*Modificar la estructura de la tabla para eliminar un campo*/
+Alter Table Sales.TBVendedor
+drop column ecivil
+go
+

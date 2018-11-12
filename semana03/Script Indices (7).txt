@@ -1,0 +1,40 @@
+/*Script Indices*/
+Use Negocios
+go
+
+/*Consultar los índice creados en la BD*/
+Select * from sys.indexes
+go
+
+/*Crear un índice normal simple por el campo
+nombre del cliente*/
+Create Index Idx_NomCli
+On Ventas.Clientes (NomCliente)
+go
+
+/*Crear un índice normal simple por el campo
+nombre del proveedor, pero ordenado de forma descendente*/
+Create Index Idx_NomPrv
+On Compras.Proveedores (NomProveedor Desc)
+go
+
+/*Eliminar índices*/
+Drop Index Ventas.Clientes.Idx_Nomcli
+go
+
+Drop Index Compras.Proveedores.Idx_NomPrv
+go
+
+/*Crear un índice compuesto y único por nom y ap de los
+empleados*/
+Create Unique Index Idx_NomApEmp
+On RRHH.Empleados (NomEmpleado, ApeEmpleado)
+go
+
+/*Crear un índice simple en la tabla Productos por NomProducto, incluyendo
+los campo IdProveedor , IdCategoria)*/
+Create Index Idx_NomProducto
+On Compras.Productos (NomProducto)
+Include (IdProveedor, IdCategoria)
+go
+

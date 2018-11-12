@@ -1,0 +1,102 @@
+--poner en uso la bd del sistema master
+use master
+go
+--crear la bd usuario
+create database BD_Minimarket
+go
+--poner en uso la bd usuario
+use BD_Minimarket
+go
+--crear esquema
+create schema ventas
+go
+--crear tabla pais
+create table ventas.pais(
+idpais char(3)not null,
+nompais varchar(25)not null
+)
+go
+--agregando una llave primaria
+alter table ventas.pais
+add constraint pk_idpais_jam primary key(idpais)
+go
+--crear tabla cliente
+create table ventas.cliente(
+idclie char(3)not null,
+nomclie varchar(25)not null,
+apeclie varchar(25)not null,
+telclie char(12)null,
+corclie varchar(25)null,
+idpais char(3)not null
+)
+go
+--agregando llave primaria
+alter table ventas.cliente
+add constraint pk_idclie_jam primary key(idclie)
+go
+--agregando llave foranea
+alter table ventas.cliente
+add constraint fk_idpais_jam foreign key(idpais)
+references ventas.pais
+go
+--agregando restriccion UNIQUE
+alter table ventas.cliente
+add constraint uq_telclie_jam unique(telclie)
+go
+alter table ventas.cliente
+add constraint uq_corclie_jam unique(corclie)
+go
+--agregando restriccion DEFAULT
+alter table ventas.cliente
+add constraint df_telclie_jam default '-'
+for telclie
+go
+alter table ventas.cliente
+add constraint df_corclie_jam default '@'
+for corclie
+go
+--crear tabla personal
+create table ventas.personal(
+idper int identity(1,1)not null,
+nomper varchar(25)not null,
+apeper varchar(25)not null,
+dniper char(15)not null,
+carper varchar(20) not null,
+sueper money not null,
+sexoper char(1)not null,
+ecper char(1)not null,
+fiper date not null,
+idpais char(3)not null
+)
+go
+--llaves PK y FK
+alter table ventas.personal
+add constraint pk_idper_jam primary key(idper)
+go
+alter table ventas.personal
+add constraint fk_idpais2_jam foreign key(idpais)
+references ventas.pais
+go
+--agregando restriccion CHECK
+--solo aceptar sexo: masculino(M) o femenino(F)
+alter table ventas.personal
+add constraint ck_sexoper_jam 
+check(sexoper='M' or sexoper='F')
+go
+--1)solo aceptar cargos cuyos valores sean vendedor,
+--supervisor o jefe
+alter table ventas.personal
+add constraint ck_carper_jam
+check(carper in('vendedor','supervisor','jefe'))
+go
+--2)solo aceptar sueldos comprendidos de s/.1000 a s/.2500
+alter table ventas.personal
+add constraint ck_sueper_jam
+check(sueper >=1000 and sueper <=2500)
+go
+--3)solo aceptar estados civiles cuyos valores sean 
+--soltero(s),casado(c),viudo(v) o divorciado(d)
+alter table ventas.personal
+add constraint ck_ecper
+check(ecper in('s','c','v','d'))
+go

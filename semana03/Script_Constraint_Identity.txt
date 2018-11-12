@@ -1,0 +1,29 @@
+/*Constraint Identity*/
+Use BDLesson3
+go
+
+/*Crear una tabla con un campo Identity*/
+Create Table Ventas.Boleta
+(
+nroBol		int Identity (1001,1),
+fecBol		date,
+valBol		smallmoney
+)
+go
+
+/*Ingresar registros a esta tabla*/
+Insert Ventas.Boleta
+Values
+(getdate(),150),
+(getdate()+1,250)
+go
+
+/*Consultar los registros*/
+Select * from Ventas.Boleta
+go
+
+
+/*Crear una tabla Formulario en el esquema dbo,
+con los campos nroForm, y fecForm. El campo
+nroForm será un correlativo a partir 2005, incrementando
+cada 10*/

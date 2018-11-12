@@ -1,0 +1,15 @@
+/*Constraint Null, Not Null*/
+
+Use BDLesson3
+go
+
+/*Creando tabla con restricción Null-not null*/
+Create Table dbo.Emple
+(
+codEmp	char(8) not null,
+nomEmp	varchar(50) not null,
+nroLicEmp Char(12) null,
+ctaTwet	varchar(15) null,
+emailEmp	 varchar(15) null
+)
+go

@@ -1,0 +1,39 @@
+/*Constraint Foreign Key*/
+Use BDLesson3
+go
+
+/*Crear la tabla Cliente*/
+Create Table Ventas.Cliente
+(
+idCli	char(5)	not null,
+nomCli	varchar(50) not null,
+dir_cli varchar(50) not null,
+idPais	int not null
+)
+go
+
+/*Crear la llave la primaria a tabla cliente*/
+Alter Table Ventas.cliente
+Add constraint PKCliente
+Primary Key (idCli)
+go
+
+/*Crear la llave foránea en la tabla cliente
+para referenciar con la tabla pais*/
+Alter Table Ventas.cliente
+Add constraint FKPaisCliente
+Foreign Key (IdPais) References Ventas.Pais
+go
+
+/*Eliminar llave foranea*/
+Alter Table Ventas.cliente
+Drop constraint FKPaisCliente
+go
+
+/*Crear la llave foránea en la tabla cliente
+para referenciar con la tabla pais y permita eliminacion en cascada*/
+Alter Table Ventas.cliente
+Add constraint FKPaisCliente
+Foreign Key (IdPais) References Ventas.Pais
+On delete cascade
+go

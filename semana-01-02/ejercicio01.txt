@@ -1,0 +1,110 @@
+/*Visualizar las base de datos del servidor*/
+Use master
+go
+
+Select * from sys.databases
+go
+
+/*Eliminar base de datos de usuario*/
+Drop Database BDNegocios
+go
+
+Drop Database BDNegocios2
+go
+
+/*Crear una base de datos de forma simple*/
+Create Database BDNegocios
+go
+
+/*Visualizar las pro?edades de la BD*/
+Exec sp_helpdb BDNegocios
+go
+
+/*Crear una BD con opciones personalizadas*/
+Create Database BDNegocio1
+ON
+(
+name=Negocio1_Data,
+filename='C:\Data\Negocio1_Data.MDF',
+size=5MB,
+maxsize=50MB,
+filegrowth=3MB
+)
+Log On
+(
+name=Negocio1_Log,
+filename='C:\Data\Negocio1_Log.LDF',
+size=10MB,
+maxsize=50MB,
+filegrowth=10MB
+)
+GO
+
+--Ver la estructura
+Exec sp_helpdb BDNegocio1
+go
+
+/*Modificar el tama?o y crecimiento del Datafile de
+la BS por los valores 10MB y 5MB respectivamente*/
+Alter Database BDNegocio1
+Modify file
+(
+name=Negocio1_Data,
+size=10MB,
+filegrowth=5MB
+)
+go
+
+/*Modificar el tama?o m?ximo del Logfile de la BD
+que ser? 200MB*/
+Alter Database BDNegocio1
+Modify file
+(
+name=Negocio1_Log,
+maxsize=200MB
+)
+go
+
+/*Modificar la BD para agregar un Datafile*/
+Alter Database BDNegocio1
+add file
+(
+name=Negocio1_DataS1,
+filename='C:\data\Negocio1_DataS1.NDF'
+)
+go
+
+--Ver la estructura
+Exec sp_helpdb BDNegocio1
+go
+
+/*Modificar la BD para agregar un Logfile*/
+Alter Database BDNegocio1
+Add Log File
+(
+name=Negocio1_Log2,
+filename='C:\Data\Negocio1_Log2.LDF'
+)
+go
+
+--Ver la estructura
+Exec sp_helpdb BDNegocio1
+go
+
+/*Separar la base de datos*/
+EXEC master.dbo.sp_detach_db @dbname = 'BDNegocio1'
+GO
+
+/*Mover en explorador los archivos (datafiles y logfiles) a una nueva carpeta
+llamada MyFolder*/
+
+
+/*Adjuntar una base de datos en nueva ubicacion*/
+Create Database BDNegocio1
+On
+(Filename='C:\MyFolder\Negocio1_Data.MDF'),
+(Filename='C:\MyFolder\Negocio1_DataS1.NDF'),
+(Filename='C:\MyFolder\Negocio1_Log.LDF'),
+(Filename='C:\MyFolder\Negocio1_Log2.LDF')
+for Attach
+go

@@ -1,0 +1,65 @@
+/*Restricciones*/
+Create Database BDLesson3
+go
+
+/*Abrir la BD*/
+Use BDLesson3
+go
+
+/*Creando Schemas*/
+Create Schema Ventas
+go
+
+Create Schema RRHH
+go
+
+Create Schema Mkt
+go
+
+/*Creando Tabla Pais*/
+Create Table Ventas.Pais
+(
+idPais int not null,
+nompais varchar(50) not null
+)
+go
+
+/*Crear la llave primaria*/
+Alter Table Ventas.Pais
+Add Constraint PKPais
+Primary Key (idPais)
+go
+
+/*Ingresar datos*/
+Insert Ventas.Pais
+Values
+(99, 'Uganda'),
+(10, 'Inglaterra')
+go
+
+/*Consultar*/
+Select * from Ventas.Pais
+go
+
+/*Eliminar la restricci?n LLave primaria*/
+Alter Table Ventas.pais
+Drop Constraint PKPais
+go
+
+/*Crear la llave primaria no clusterizada*/
+Alter Table Ventas.Pais
+Add Constraint PKPais
+Primary Key  nonclustered (idPais) 
+go
+
+/*Ingresar datos*/
+Insert Ventas.Pais
+Values
+(20, 'Uruguay'),
+(12, 'Venezuela')
+go
+
+/*Consultar*/
+Select * from Ventas.Pais
+go
+

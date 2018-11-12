@@ -1,0 +1,33 @@
+/**** Tipo de dato de usuario ***/
+Use BDTienda
+go
+
+/*Creando tipo de dato de usuario usando sp_addType*/
+Exec sp_addtype Cadena,'Varchar(50)','Not null'
+go
+
+Exec sp_addtype Fecha,'Date', 'not null'
+go
+
+/*Utilizando el tipo de dato del usuario creado
+en una tabla*/
+Create Table TBContacto
+(
+nombre	Cadena,
+fnac	Fecha
+)
+go
+
+/*Creando tipo de dato de usuario usando Create Type*/
+Create Type NumDoc 
+From Int not null
+go
+
+/*Usando tipo de dato de usuario en una tabla*/
+Create Table Boleta
+(
+nroB	NumDoc,
+FecB	fecha
+)
+go
+

@@ -1,0 +1,141 @@
+--poner en uso la bd master
+use master
+go
+--crear una bd por defecto
+create database BD_Fabrica
+go
+--poner en uso la bd creada
+use BD_Fabrica
+go
+--crear los equemas para la bd creada
+create schema RRHH
+go
+create schema Logistica
+go
+create schema Ventas
+go
+--crear tipos de datos: sp_addtype
+exec sp_addtype fono, 'varchar(15)', null
+go
+exec sp_addtype genero, 'char(1)', 'not null'
+go
+exec sp_addtype email, 'varchar(40)', null
+go
+--verificar los tipos de datos creados
+select * from sys.systypes
+go
+--borrar tipos de datos usuario
+exec sp_droptype email
+go
+--verificar
+select * from sys.systypes
+go
+--creando tipos de datos: CREATE TYPE
+create type jamFono from char(12)null
+go
+create type jamFonoCel from char(9)null
+go
+create type jamSueldo from int not null
+go
+create type jamEmail from varchar(40)null
+go
+create type jamGenero from char(1)not null
+go
+--borrar tipos de datos: create type
+drop type jamSueldo --ejemplo
+go
+--ver tipos de datos creados
+select * from sys.systypes
+go
+--creando una TABLA dentro de un ESQUEMA
+create table RRHH.empleado(
+codempleado char(5)primary key,
+nombre varchar(25)not null,
+apellidos varchar(25)not null,
+telefono fono,
+sexo genero
+)
+go
+create table Logistica.Operario(
+cod_ope char(5)primary key,
+nom_ope varchar(25)not null,
+ape_ope varchar(25)not null,
+cel_ope jamFonoCel,
+sexo_ope jamGenero,
+cor_ope jamEmail
+)
+go
+--agregando nuevas columnas a la tabla operario
+alter table Logistica.Operario
+add sueldo money not null
+go
+alter table Logistica.Operario
+add FechaNac date not null
+go
+--verificar
+select * from Logistica.Operario
+go
+--borrar o quitar una columna
+alter table Logistica.Operario
+drop column FechaNac
+go
+--verificar
+select * from Logistica.Operario
+go
+--agregar un conjunto de campos o columnas
+alter table RRHH.empleado
+add
+direccion varchar(35)not null,
+distrito varchar(20)not null,
+dni char(8)
+go
+--verificar
+select * from RRHH.empleado
+go
+--VER los objetos de una bd
+select * from sys.sysobjects
+go
+--ver las tablas de la bd
+select * from sys.tables 
+go
+--borrar una tabla
+drop table Logistica.Operario
+go
+--verificar
+select * from sys.tables
+go
+
+/*agregando GRUPOS DE ARCHIVOS*/
+use master
+go
+create database BD_Hospital --bd personalizada
+on(
+name='BD_Hospital',
+filename='c:\hospital\BD_Hospital.mdf' --datafile
+)
+log on(
+name='BD_Hospital_log',
+filename='c:\hospital\BD_Hospital_log.ldf' --logfile
+)
+go
+sp_helpdb BD_Hospital --verificar
+go
+--agregando los FileGroup
+alter database BD_Hospital add filegroup DATA_1
+go
+--agregando archivos secundarios al filegroup DATA_1
+alter database BD_Hospital
+add file(
+name='BD_Hospital_SEC1',
+filename='C:\hospital\BD_Hospital_SEC1.ndf' --ARCHIVO SECUNDARIO_1
+)to filegroup DATA_1
+go
+alter database BD_Hospital
+add file(
+name='BD_Hospital_SEC2',
+filename='C:\hospital\BD_Hospital_SEC2.ndf' --ARCHIVO SECUNDARIO_2
+)to filegroup DATA_1
+go
+--verificar los grupos de archivos
+sp_helpdb BD_Hospital
+go

@@ -1,0 +1,24 @@
+/* Constraint UNIQUE*/
+Use BDLesson3
+go
+
+/*Crear tabla Tienda*/
+Create Table MKT.Tienda
+(
+codTie char(5) not null,
+nomTie Varchar(50) not null,
+dirTie Varchar(50) not null
+)
+go
+
+/*Creando restricciòn Unique Simple en la tabla pais*/
+Alter Table Ventas.Pais
+Add Constraint UQnomPais
+Unique (nomPais)
+go
+
+/*Creando restricciòn Unqiue Compuesto en la tabla Tienda*/
+Alter Table MKT.Tienda
+Add Constraint UQNomDirTienda
+Unique (nomTie, dirTie)
+go
